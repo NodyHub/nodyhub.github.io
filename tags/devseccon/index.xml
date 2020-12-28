@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>devseccon on Nody´s blog</title>
-    <link>http://nodyhub.github.io/tags/devseccon/</link>
+    <link>https://nodyhub.github.io/tags/devseccon/</link>
     <description>Nody´s blog (devseccon)</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Wed, 20 Nov 2019 00:00:00 +0000</lastBuildDate>
     
-    <atom:link href="http://nodyhub.github.io/tags/devseccon/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://nodyhub.github.io/tags/devseccon/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>How to Secure OpenShift Environments and What Happens If You Don´t</title>
-      <link>http://nodyhub.github.io/publication/2019-devseccon/</link>
+      <link>https://nodyhub.github.io/publication/2019-devseccon/</link>
       <pubDate>Wed, 20 Nov 2019 00:00:00 +0000</pubDate>
       
-      <guid>http://nodyhub.github.io/publication/2019-devseccon/</guid>
+      <guid>https://nodyhub.github.io/publication/2019-devseccon/</guid>
       <description>&lt;p&gt;Jan Harrie, DevSecCon, London, United Kingdom&lt;/p&gt;
 &lt;h2 id=&#34;abstract&#34;&gt;Abstract&lt;/h2&gt;
 &lt;p&gt;OpenShift by Red Hat is one of the major Platform as a Service (PaaS) solutions on the market. It is used to automatically deploy Kubernetes clusters and provides useful extensions for cluster management mixed with some magic under the hood.
