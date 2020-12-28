@@ -2,13 +2,13 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on Nody´s blog</title>
-    <link>https://nodyhub.github.io/tags/</link>
+    <link>https://blog.nody.cc/tags/</link>
     <description>Nody´s blog (Tags)</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Sun, 23 Aug 2020 16:30:00 +0200</lastBuildDate>
     
-    <atom:link href="https://nodyhub.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://blog.nody.cc/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
   </channel>

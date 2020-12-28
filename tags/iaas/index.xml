@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>IaaS on Nody´s blog</title>
-    <link>https://nodyhub.github.io/tags/iaas/</link>
+    <link>https://blog.nody.cc/tags/iaas/</link>
     <description>Nody´s blog (IaaS)</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Wed, 20 Mar 2019 00:00:00 +0000</lastBuildDate>
     
-    <atom:link href="https://nodyhub.github.io/tags/iaas/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://blog.nody.cc/tags/iaas/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>TROOPERS19</title>
-      <link>https://nodyhub.github.io/publication/2019-troopers/</link>
+      <link>https://blog.nody.cc/publication/2019-troopers/</link>
       <pubDate>Wed, 20 Mar 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://nodyhub.github.io/publication/2019-troopers/</guid>
+      <guid>https://blog.nody.cc/publication/2019-troopers/</guid>
       <description>&lt;p&gt;Heidelberg, Germany&lt;/p&gt;
 &lt;h2 id=&#34;threat-modelling-and-beyond-for-cisco-aci&#34;&gt;Threat Modelling and Beyond for Cisco ACI&lt;/h2&gt;
 &lt;p&gt;Frank Block &amp;amp; Jan Harrie&lt;/p&gt;
@@ -69,10 +69,10 @@
     
     <item>
       <title>Attacking VMware NSX</title>
-      <link>https://nodyhub.github.io/publication/2018-h2hc/</link>
+      <link>https://blog.nody.cc/publication/2018-h2hc/</link>
       <pubDate>Mon, 17 Sep 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://nodyhub.github.io/publication/2018-h2hc/</guid>
+      <guid>https://blog.nody.cc/publication/2018-h2hc/</guid>
       <description>&lt;p&gt;Matthias Luft &amp;amp; Jan Harrie, H2HC, São Paulo, Brazil&lt;/p&gt;
 &lt;h2 id=&#34;abstract&#34;&gt;Abstract&lt;/h2&gt;
 &lt;p&gt;In this presentation we will describe how we performed and still are performing an offensive security analysis of VMware&amp;rsquo;s SDN solution NSX. NSX integrates deeply into VMware&amp;rsquo;s virtualization infrastructure and provides network filtering features in a centrally managed, hypervisor-based micro segmentation way. The deep virtualization integration resulted in challenges that we will address in this talk. For example, we will detail how to analyze ESXi kernel modules, both in a debugging and static code analysis way. We will also provide an attack vector analysis based on the NSX architecture and communication protocols as well as fuzzing results and technologies for the kernel modules and overlay networking components.&lt;/p&gt;
