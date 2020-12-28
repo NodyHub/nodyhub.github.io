@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+        
+<meta charset="utf-8">
+<meta name="HandheldFriendly" content="True">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer-when-downgrade">
+
+<title>Pentesting Cloud Sandboxes in the wild  - Nody´s blog</title>
+<meta name="description" content="Blog with infosec content from Jan Harrie">
+
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://nodyhub.github.io/rss/">
+
+<link rel="icon" type="image/x-icon" href="http://nodyhub.github.io/favicon.ico">
+<link rel="apple-touch-icon-precomposed" href="http://nodyhub.github.io/favicon.png">
+
+<link rel="stylesheet" href="http://nodyhub.github.io/css/style.css?rnd=1609148254" />
+
+<meta property="og:title" content="Pentesting Cloud Sandboxes in the wild" />
+<meta property="og:description" content="Matthias and I talked about cloud sandboxes on virtual BSides Munich 2020. This blogpost summarizes the content of the talk." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://nodyhub.github.io/posts/bsides-munich-2020/" />
+<meta property="og:image" content="http://nodyhub.github.io/images/logo.png"/>
+<meta property="article:published_time" content="2020-08-23T16:30:00+02:00" />
+<meta property="article:modified_time" content="2020-08-23T16:30:00+02:00" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="http://nodyhub.github.io/images/logo.png"/>
+
+<meta name="twitter:title" content="Pentesting Cloud Sandboxes in the wild"/>
+<meta name="twitter:description" content="Matthias and I talked about cloud sandboxes on virtual BSides Munich 2020. This blogpost summarizes the content of the talk."/>
+
+
+
+
+
+
+    
+</head>
+<body>
+    <div class="container">
+        <header> 
+            
+                <h1 class="site-header">
+    <a href="http://nodyhub.github.io/">Nody´s blog</a>
+</h1>
+<nav>
+    
+    
+    <a class="" href="/about/" title="About">About</a>
+    
+    <a class="" href="/tags/" title="Tags">Tags</a>
+    
+    <a class="" href="/posts/" title="Archive">Archive</a>
+    
+</nav>
+
+            
+        </header>
+        <main>
+            
+
+    <article class="post">
+        <header>
+            <h1>Pentesting Cloud Sandboxes in the wild</h1>
+        </header>
+        <div class="content">
+            <p>Matthias and I talked about cloud sandboxes on <a href="https://2020.bsidesmunich.org/">virtual BSides Munich 2020</a>. This blogpost summarizes the content of the talk.</p>
+<p>First, shout out to the BSides Munich Orga team to make the conference happen. Matthias and I were thankful to have the pleasure to contribute to the event. Furthermore, another thank you to the other speakers, who shared their research during this weird virtual-conference-times!</p>
+<p>We started our talk with a short re-cap about containers, based on the amazing talk “Fucking Containers – how do they work?” from Andreas Krebs which was presented on BSides Munich 2019 (<a href="https://2019.bsidesmunich.org/talks/01-03_Fucking-Containers/">Ref</a>, <a href="https://raw.githubusercontent.com/BSidesMUC/BsidesMunich2019/master/files/01-03_Fucking-Containers.pdf">Slides</a>).</p>
+<p><img src="../../images/akrebs-container.png" alt="A. Krebs F***ing Containers"></p>
+<p>After the re-cap and disclaimer, we start to go through well-known container breakout techniques. To make a long story short, we start with a <strong>root filesystem</strong>, which is <strong>accessible from a container</strong>. In that case, you have to <strong>leverage basic Linux privileges escalation techniques</strong>, by abusing services from the host system.</p>
+<p><img src="../../images/Attacking_Container_filesystem.png" alt="Attack Container Filesystem"></p>
+<p>Afterward, we address the configuration issue, which may occur if you have access to the Linux kernel by a <strong>writable <code>/sys</code> directory</strong>. In that way, you can <strong>create a call-back</strong> script that is <strong>triggered if a device is plugged</strong> into the system – which can also be simulated. Next breakout would be by <strong>exploitation</strong> of the existence of the <strong>capability <code>CAP_SYS_MODULE</code></strong> to <strong>load kernel modules</strong> and the <strong>capability <code>CAP_SYS_ADMIN</code></strong> to leverage <strong>Linux control groups (cgroups)</strong> to get out of the box. If you have <strong>access to the devices <code>/dev</code></strong> of the container host, you can go and <strong>mount</strong> the <strong>hard drive</strong> and access the root filesystem, as explained prior. And we give a quick reference to what could be done with the <code>/proc/keys</code>.</p>
+<p><img src="../../images/Attacking_Container_hardware-kernel.png" alt="Attack Container Hardware and Kernel"></p>
+<p>The last technique, which seems to be very local-docker-installation related is the container with <strong>access to the Docker socket</strong>. With access to the Docker socket, you can <strong>start</strong> further <strong>container with “super-powers”</strong>, which allows you previously explained techniques.</p>
+<p><img src="../../images/Attacking_Container_socket.png" alt="Attack Container ctrl plane"></p>
+<p>A detailed explanation of these attacks can be found on this blog <a href="https://blog.nody.cc/posts/container-breakouts-part2/">Container Breakouts – Part 1</a>, <a href="https://blog.nody.cc/posts/container-breakouts-part2/">Container Breakouts – Part 2</a> and <a href="https://blog.nody.cc/posts/container-breakouts-part2/">Container Breakouts – Part 3</a>. You may now think “why do they include the Docker socket within the breakout list?”. That’s the point. Nowadays, a cloud container runtime may come in various flavors. You never know if the container is started within a Kubernetes environment or own-created orchestration layer. We will finally address the container breakout by the usage of the metadata API. The metadata API of the cloud is the control plane of the cloud, like the docker socket is the control plain of the local docker installation.</p>
+<p>After discussing the various breakout techniques, we go through a short comparison from wide-spread cloud container runtimes. (We decided to let Kubernetes runtimes out of the comparison). The following screenshot shows the overview table.</p>
+<p><img src="../../images/plattform-comp.png" alt="Cloud Platform Comparison"></p>
+<p>The data is measured with <a href="https://github.com/brompwnie/botb">botb</a> and <a href="https://github.com/genuinetools/amicontained/">amicontained</a>. All technical details can be found on <a href="https://github.com/NodyHub/bsidesmuc2020">Github</a>, including the scan results of both tools.</p>
+<p>After summarization of the attack vectors, we go through the details of how <a href="https://github.com/brompwnie/botb">botb</a> and <a href="https://github.com/genuinetools/amicontained/">amicontained</a> can be used by you, maybe in the next assessment?</p>
+<p><img src="../../images/botb.png" alt="BotB usage"></p>
+<p>With the knowledge about the attacks, we go through the mitigation techniques that can be used to prevent breakouts and tune the security of your sandbox. Finally, a conclusion and an outline with further work close the session.</p>
+<p>We hope that you enjoyed the session and if you are interested to discuss content, do not hesitate and get in touch.</p>
+<p>Cheers,</p>
+<p><a href="https://twitter.com/uchi_mata">Matthias</a> and <a href="https://twitter.com/NodyTweet">Jan</a></p>
+<p>&ndash;</p>
+<ul>
+<li><a href="../../publication/202008_bsides_muc.pdf">Slides</a> or <a href="https://gurke.io/bsidesmuc2020">Google Slides</a></li>
+<li><a href="https://youtu.be/5urnOPb-BbY?t=948">Recording</a></li>
+<li><a href="https://github.com/NodyHub/bsidesmuc2020">Scan results on GitHub</a></li>
+<li><a href="https://www.bsidesmunich.org/">BSides Munich</a></li>
+</ul>
+        </div>
+        <div class="article-info">
+    
+        <div class="article-date">2020-08-23</div>
+    
+    <div class="article-taxonomies">
+        
+            
+                <ul class="article-tags">
+                    
+                        <li><a href="http://nodyhub.github.io/tags/docker">#Docker</a></li>
+                    
+                        <li><a href="http://nodyhub.github.io/tags/container">#Container</a></li>
+                    
+                        <li><a href="http://nodyhub.github.io/tags/breakout">#breakout</a></li>
+                    
+                        <li><a href="http://nodyhub.github.io/tags/security">#security</a></li>
+                    
+                </ul>
+        
+    </div>
+</div>
+
+    </article>
+    
+
+
+        </main>
+        <footer>
+            
+                <p>© Jan Harrie, 2020<br>
+Powered by <a target="_blank" href="https://gohugo.io/">Hugo</a>, theme <a target="_blank" href="https://github.com/mitrichius/hugo-theme-anubis">Anubis</a>.
+</p>
+            
+        </footer>
+    </div>
+</body>
+</html>

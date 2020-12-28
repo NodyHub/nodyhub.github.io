@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+        
+<meta charset="utf-8">
+<meta name="HandheldFriendly" content="True">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer-when-downgrade">
+
+<title>Verify your Kubernetes Cluster Network Policies: From Faith to Proof  - Nody´s blog</title>
+<meta name="description" content="Blog with infosec content from Jan Harrie">
+
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://nodyhub.github.io/rss/">
+
+<link rel="icon" type="image/x-icon" href="http://nodyhub.github.io/favicon.ico">
+<link rel="apple-touch-icon-precomposed" href="http://nodyhub.github.io/favicon.png">
+
+<link rel="stylesheet" href="http://nodyhub.github.io/css/style.css?rnd=1609148254" />
+
+<meta property="og:title" content="Verify your Kubernetes Cluster Network Policies: From Faith to Proof" />
+<meta property="og:description" content="Implement a technical check that verifies implemented security measurements. In case of network policy, try to establish a blocked network connection. Keep the checks as simple as possible and propagate the results in existing monitoring solution." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://nodyhub.github.io/posts/2020-06-kubernetes-network-policy-verification/" />
+<meta property="og:image" content="http://nodyhub.github.io/images/logo.png"/>
+<meta property="article:published_time" content="2020-06-27T11:39:55+02:00" />
+<meta property="article:modified_time" content="2020-06-27T11:39:55+02:00" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="http://nodyhub.github.io/images/logo.png"/>
+
+<meta name="twitter:title" content="Verify your Kubernetes Cluster Network Policies: From Faith to Proof"/>
+<meta name="twitter:description" content="Implement a technical check that verifies implemented security measurements. In case of network policy, try to establish a blocked network connection. Keep the checks as simple as possible and propagate the results in existing monitoring solution."/>
+
+
+
+
+
+
+    
+</head>
+<body>
+    <div class="container">
+        <header> 
+            
+                <h1 class="site-header">
+    <a href="http://nodyhub.github.io/">Nody´s blog</a>
+</h1>
+<nav>
+    
+    
+    <a class="" href="/about/" title="About">About</a>
+    
+    <a class="" href="/tags/" title="Tags">Tags</a>
+    
+    <a class="" href="/posts/" title="Archive">Archive</a>
+    
+</nav>
+
+            
+        </header>
+        <main>
+            
+
+    <article class="post">
+        <header>
+            <h1>Verify your Kubernetes Cluster Network Policies: From Faith to Proof</h1>
+        </header>
+        <div class="content">
+            <p>Implement a technical check that verifies implemented security measurements. In case of network policy, try to establish a blocked network connection. Keep the checks as simple as possible and propagate the results in existing monitoring solution.</p>
+<h2 id="intro">Intro</h2>
+<p>Welcome to my first blog post. I decided to drop my first letters on one of my favoured research topics: <a href="https://kubernetes.io/">Kubernetes</a>. To be more specific, this blog post addresses network policy verification in Kubernetes.</p>
+<p>It is an ongoing discussion as a security consultant to rate if something &ldquo;is secure&rdquo; and to motivate people to trust in the recommended solution that its secure. People always argue and discuss about feelings – something feels not secure // I feel not confi with the solution // are you sure that it is secure // whatever. So, you may now ask yourself how to handle such situations? To be honest, one must find a way to convince people that the introduced approach is &ldquo;secure&rdquo;. As a technician I have trust in my solutions, but how to convince someone who has no trust?</p>
+<p>This blog post addresses continuous verification of introduced security measurements, with <a href="/posts/kubernetes-basics/#network-policies">Kubernetes Network Policies</a> as an example.</p>
+<h2 id="technical-background">Technical Background</h2>
+<p>For a basic understanding, it would be from relevance to have some knowledge in the following topics:</p>
+<ul>
+<li><a href="/posts/kubernetes-basics/#kubernetes-itself">Kubernetes Basics</a></li>
+<li><a href="/posts/kubernetes-basics/#networking">Kubernetes Networking</a></li>
+<li><a href="/posts/kubernetes-basics/#network-policies">Kubernetes Network Policies</a></li>
+</ul>
+<h2 id="solution">Solution</h2>
+<p>I am absolutely not a mathematician or old Greek, but <strong>reductio ad absurdum</strong> describes how we are going to propose an approach to convert my trust into provable trust.</p>
+<h3 id="general-approach">General approach</h3>
+<p>The easiest way to summarize the solution is the phrase <strong>PoC||GTFO</strong>. But, what does this exactly mean?</p>
+<p>Similar to test driven development one can create test cases for infrastructure components that verify that implemented security measurements are sufficient. A lot of people do handle Kubernetes as a magic black box, or at least they speak about it like that. To put light into the dark, a lot of features and functionalities are implemented in basic Unix features – especially in terms of security on container level.</p>
+<p>The major question is now – <strong>How do we verify that implemented features are sufficient? Just test it.</strong> Since we know that at the end of the day a lot of security measurements in Kubernetes are implemented by the container runtime environment, we can explicit test for them. To verify that a measurement is sufficient, a technical test can be implemented that focus on the feature.</p>
+<p>Before one create a test, it is necessary to <strong>investigate the implemented measurements and figure out how they are realized</strong>. Based on that knowledge one can <strong>implement a simple check</strong>. The overall approach is to implement a check <strong>based on the KISS principle</strong>. Test for container escapes, test for resource exhaustion or test for possible network communication. Multiple tests can be <strong>performed with simple Unix command line tools</strong> or other quick hacks or code snippets from Stack Overflow ;o). After executing these checks, the program returns with a return code that informs about a success or a failure. Such result can be evaluated, and the status propagated – technically spoke, <strong>check continiously and evaluate the return code</strong>.</p>
+<p>The magic question is now, how can we <strong>continuously monitor</strong> if security measurements stays valid? It’s easy – we use the <strong>same approach as the rest of the cluster workload</strong> is monitored.</p>
+<p>If a Kubernetes cluster is used to ship an application, somewhere the health state of the Pods is monitored. Normally, there is a dashboard with fancy pie charts and other useful information and typically there is also a place that shows which containers are up and running. If we want to propagate the <strong>failure</strong> of a <strong>security checks</strong> into the dashboard the easiest way is to let the container <strong>crash continuously</strong>. The status of the crashed container is <strong>propagated into</strong> the normal <strong>container monitoring lifecycle</strong> and follow-up actions must be performed.</p>
+<h3 id="technical-implementation">Technical Implementation</h3>
+<p>As an example how to create a proof of concept for a security measurement I decided to implement a check for <a href="/posts/kubernetes-basics/#network-policies">Network Policies</a>. What is the easiest way to check if traffic is filter? Right – try to connect to the target should not be available. In this situation we may also be also interested if certain other hosts are available.</p>
+<p>That sounds like a small project, which can be implemented in a few lines of code. That is perfect to start learning a programming language like Rust, Go or classy C, right? No – absolutely not in our situation. We need a quick implementable check for our measurement. The check should be easy understandable, implementable, reproducible, and so on. It is just a TCP connection – so I decided to use netcat and some bash and that’s it. The check itself fits into one line:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">echo foo | ncat $TARGET $PORT &gt; /dev/null 2&gt;&amp;<span style="color:#ae81ff">1</span>
+</code></pre></div><p>If a connection can be established the command above will be zero. If the command above fails, because a connection cannot be established, the return code is not zero. The evaluation can also be done in one line, as following:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">[[</span> $? !<span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">]]</span>
+</code></pre></div><p>Combining both commands from above with some shell loops and sleep timers in a <a href="https://github.com/NodyHub/docker-k8s-resources/blob/master/docker-images/test-tcp/test.sh">shell script</a> and move the shell script in a <a href="https://github.com/NodyHub/docker-k8s-resources/blob/master/docker-images/test-tcp/Dockerfile">Dockerfile</a>, we are good to go to have our continuous security measurement verification in place. As soon the image is build and pushed to a container registry, it can even be executed in a Kubernetes cluster with a respective <a href="https://github.com/NodyHub/docker-k8s-resources/blob/master/docker-images/test-tcp/test-tcp.yaml">deployment</a>. It is even possible to label the deployment in the same manner like a deployed application. This is an opportunity to cross-check implemented Network Policies. Furthermore, Kubernetes allows to inject configuration into container so that the to-be-checked hosts can be adjusted on the fly.</p>
+<h3 id="demo">Demo</h3>
+<p>As demo show I have set up a cluster and my security test should ensure that we have access to the internet on port 80 and the MongoDB from my namespace is not accessible on its default port.</p>
+<p>An excerpt from the deployed <a href="https://kubernetes.io/docs/concepts/configuration/configmap/">Configmap</a> configuration would be following:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ConfigMap</span>
+<span style="color:#f92672">data</span>:
+  <span style="color:#f92672">allow.lst</span>: |<span style="color:#e6db74">
+</span><span style="color:#e6db74">    </span>    <span style="color:#ae81ff">1.1.1.1</span>:<span style="color:#ae81ff">80</span>
+  <span style="color:#f92672">deny.lst</span>: |<span style="color:#e6db74">
+</span><span style="color:#e6db74">    </span>    <span style="color:#ae81ff">mongo:27017</span>
+</code></pre></div><p>After deploying the container, we can see in the log output that the checks are successful as desired:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ kubectl logs test-tcp-564f4b9b58-spjmp
+<span style="color:#f92672">[</span>25/06/2020 14:52:00 | DEBUG<span style="color:#f92672">]</span> Check hosts from allow.lst to be available
+<span style="color:#f92672">[</span>25/06/2020 14:52:00 | INFO<span style="color:#f92672">]</span> 1.1.1.1:80 is accessible
+<span style="color:#f92672">[</span>25/06/2020 14:52:00 | DEBUG<span style="color:#f92672">]</span> Check hosts from deny.lst to be not available
+<span style="color:#f92672">[</span>25/06/2020 14:52:01 | INFO<span style="color:#f92672">]</span> mongo:27017 not accessible
+<span style="color:#f92672">[</span>25/06/2020 14:52:01 | DEBUG<span style="color:#f92672">]</span> wait <span style="color:#ae81ff">60</span> seconds and repeat
+</code></pre></div><p>To verify that our script is sufficient working we can add another host to the <code>deny.lst</code>, which we know that is accessible, but should not. The configmap can be adjusted during usage in the cluster and the updated value is propagated into the pods:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ kubectl logs test-tcp-564f4b9b58-spjmp
+<span style="color:#f92672">[</span>…<span style="color:#f92672">]</span>
+<span style="color:#f92672">[</span>25/06/2020 14:58:02 | DEBUG<span style="color:#f92672">]</span> Check hosts from allow.lst to be available
+<span style="color:#f92672">[</span>25/06/2020 14:58:02 | INFO<span style="color:#f92672">]</span> 1.1.1.1:80 is accessible
+<span style="color:#f92672">[</span>25/06/2020 14:58:02 | DEBUG<span style="color:#f92672">]</span> Check hosts from deny.lst to be not available
+<span style="color:#f92672">[</span>25/06/2020 14:58:02 | INFO<span style="color:#f92672">]</span> mongo:27017 not accessible
+<span style="color:#f92672">[</span>25/06/2020 14:58:02 | ERROR<span style="color:#f92672">]</span> 1.1.1.1:80 is accessible, but should not be !!
+$
+</code></pre></div><p>As we can see the pod crashed and the cluster always tries to restart the pod. These crashes are propagated into the in-place container monitoring solution. The support or operations team that monitors the cluster health status can now react and create a ticket or even remediate the issue by performing a role-back of previous enrolled changes. The overall status change would have after remediation an output like the following:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ kubectl get pods -w
+NAME                        READY   STATUS             RESTARTS   AGE
+test-tcp-564f4b9b58-spjmp   1/1     Running            <span style="color:#ae81ff">0</span>          5m43s
+test-tcp-564f4b9b58-spjmp   0/1     Error              <span style="color:#ae81ff">0</span>          6m9s
+test-tcp-564f4b9b58-spjmp   0/1     Error              <span style="color:#ae81ff">1</span>          6m11s
+test-tcp-564f4b9b58-spjmp   0/1     CrashLoopBackOff   <span style="color:#ae81ff">1</span>          6m26s
+test-tcp-564f4b9b58-spjmp   0/1     Error              <span style="color:#ae81ff">2</span>          6m27s
+test-tcp-564f4b9b58-spjmp   0/1     CrashLoopBackOff   <span style="color:#ae81ff">2</span>          6m43s
+test-tcp-564f4b9b58-spjmp   0/1     Error              <span style="color:#ae81ff">3</span>          6m56s
+test-tcp-564f4b9b58-spjmp   0/1     CrashLoopBackOff   <span style="color:#ae81ff">3</span>          7m7s
+test-tcp-564f4b9b58-spjmp   0/1     Error              <span style="color:#ae81ff">4</span>          7m52s
+test-tcp-564f4b9b58-spjmp   0/1     CrashLoopBackOff   <span style="color:#ae81ff">4</span>          8m6s
+test-tcp-564f4b9b58-spjmp   0/1     Error              <span style="color:#ae81ff">5</span>          9m23s
+test-tcp-564f4b9b58-spjmp   0/1     CrashLoopBackOff   <span style="color:#ae81ff">5</span>          9m36s
+test-tcp-564f4b9b58-spjmp   1/1     Running            <span style="color:#ae81ff">6</span>          12m
+</code></pre></div><p>In my case I performed a role-back of the configuration and the pod could restart and go back into the continuous while loop and stays in the running status.</p>
+<h2 id="summary">Summary</h2>
+<p>The general solution to generate trust for an implemented security measurement is by <strong>implementing a check</strong> that verifies the assumptions. To make use of the implemented check, it must also <strong>easily integratable into existing life cycle</strong>, e.g., continuous monitoring.</p>
+<p>We have seen an approach how to <strong>use basic Unix command line tools</strong> to verify the validity of an implemented security measurement. The implementation of a technical PoC is kept as simple as possible to reduce bugs in the test itself.</p>
+<p>The overall intention is to <strong>reduce the amount of time that is spend during endless meetings that discuss if a measurement is sufficient or not</strong>. Using the same time to <strong>implement a PoC</strong> will reveal in a provable statement, which can be rechecked every now and then.</p>
+<h2 id="remarks">Remarks</h2>
+<p>I remembered during writing of this blogpost that the topic is highly related to the BlackHat London 2019 talk <a href="https://www.blackhat.com/eu-19/briefings/schedule/#reverse-engineering-and-exploiting-builds-in-the-cloud-17287">Reverse Engineering and Exploiting Builds in the Cloud</a>. The researchers state in their session how security checks can be continuously performed during the build process for the build pipeline. <a href="https://twitter.com/brompwnie">@brompwnie</a> developed for security checks the tool <a href="https://github.com/brompwnie/botb">Break out the Box (BOtB)</a>, which can perform various security checks continuously.</p>
+<p>As a little disclaimer, the implemented bash script is a quick and dirty hack, which should show that not always an over-engineered solution is necessary to perform simple tasks ;o)</p>
+<h2 id="links">Links</h2>
+<ul>
+<li><a href="https://github.com/NodyHub/docker-k8s-resources/blob/master/docker-images/test-tcp/test.sh">Shell script</a></li>
+<li><a href="https://github.com/NodyHub/docker-k8s-resources/blob/master/docker-images/test-tcp/Dockerfile">Dockerfile</a></li>
+<li><a href="https://hub.docker.com/r/nodyd/test-tcp">Docker Hub Image</a></li>
+<li><a href="https://github.com/NodyHub/docker-k8s-resources/blob/master/docker-images/test-tcp/test-tcp.yaml">Kubernetes Resources</a></li>
+</ul>
+        </div>
+        <div class="article-info">
+    
+        <div class="article-date">2020-06-27</div>
+    
+    <div class="article-taxonomies">
+        
+            
+                <ul class="article-tags">
+                    
+                        <li><a href="http://nodyhub.github.io/tags/kubernetes">#Kubernetes</a></li>
+                    
+                        <li><a href="http://nodyhub.github.io/tags/security">#security</a></li>
+                    
+                        <li><a href="http://nodyhub.github.io/tags/network-policies">#Network Policies</a></li>
+                    
+                </ul>
+        
+    </div>
+</div>
+
+    </article>
+    
+
+
+        </main>
+        <footer>
+            
+                <p>© Jan Harrie, 2020<br>
+Powered by <a target="_blank" href="https://gohugo.io/">Hugo</a>, theme <a target="_blank" href="https://github.com/mitrichius/hugo-theme-anubis">Anubis</a>.
+</p>
+            
+        </footer>
+    </div>
+</body>
+</html>

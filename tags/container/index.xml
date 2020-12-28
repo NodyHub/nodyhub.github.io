@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Container on Nody´s blog</title>
+    <link>http://nodyhub.github.io/tags/container/</link>
+    <description>Nody´s blog (Container)</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 23 Aug 2020 16:30:00 +0200</lastBuildDate>
+    
+    <atom:link href="http://nodyhub.github.io/tags/container/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Pentesting Cloud Sandboxes in the wild</title>
+      <link>http://nodyhub.github.io/posts/bsides-munich-2020/</link>
+      <pubDate>Sun, 23 Aug 2020 16:30:00 +0200</pubDate>
+      
+      <guid>http://nodyhub.github.io/posts/bsides-munich-2020/</guid>
+      <description>&lt;p&gt;Matthias and I talked about cloud sandboxes on &lt;a href=&#34;https://2020.bsidesmunich.org/&#34;&gt;virtual BSides Munich 2020&lt;/a&gt;. This blogpost summarizes the content of the talk.&lt;/p&gt;
+&lt;p&gt;First, shout out to the BSides Munich Orga team to make the conference happen. Matthias and I were thankful to have the pleasure to contribute to the event. Furthermore, another thank you to the other speakers, who shared their research during this weird virtual-conference-times!&lt;/p&gt;
+&lt;p&gt;We started our talk with a short re-cap about containers, based on the amazing talk “Fucking Containers – how do they work?” from Andreas Krebs which was presented on BSides Munich 2019 (&lt;a href=&#34;https://2019.bsidesmunich.org/talks/01-03_Fucking-Containers/&#34;&gt;Ref&lt;/a&gt;, &lt;a href=&#34;https://raw.githubusercontent.com/BSidesMUC/BsidesMunich2019/master/files/01-03_Fucking-Containers.pdf&#34;&gt;Slides&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;../../images/akrebs-container.png&#34; alt=&#34;A. Krebs F***ing Containers&#34;&gt;&lt;/p&gt;
+&lt;p&gt;After the re-cap and disclaimer, we start to go through well-known container breakout techniques. To make a long story short, we start with a &lt;strong&gt;root filesystem&lt;/strong&gt;, which is &lt;strong&gt;accessible from a container&lt;/strong&gt;. In that case, you have to &lt;strong&gt;leverage basic Linux privileges escalation techniques&lt;/strong&gt;, by abusing services from the host system.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;../../images/Attacking_Container_filesystem.png&#34; alt=&#34;Attack Container Filesystem&#34;&gt;&lt;/p&gt;
+&lt;p&gt;Afterward, we address the configuration issue, which may occur if you have access to the Linux kernel by a &lt;strong&gt;writable &lt;code&gt;/sys&lt;/code&gt; directory&lt;/strong&gt;. In that way, you can &lt;strong&gt;create a call-back&lt;/strong&gt; script that is &lt;strong&gt;triggered if a device is plugged&lt;/strong&gt; into the system – which can also be simulated. Next breakout would be by &lt;strong&gt;exploitation&lt;/strong&gt; of the existence of the &lt;strong&gt;capability &lt;code&gt;CAP_SYS_MODULE&lt;/code&gt;&lt;/strong&gt; to &lt;strong&gt;load kernel modules&lt;/strong&gt; and the &lt;strong&gt;capability &lt;code&gt;CAP_SYS_ADMIN&lt;/code&gt;&lt;/strong&gt; to leverage &lt;strong&gt;Linux control groups (cgroups)&lt;/strong&gt; to get out of the box. If you have &lt;strong&gt;access to the devices &lt;code&gt;/dev&lt;/code&gt;&lt;/strong&gt; of the container host, you can go and &lt;strong&gt;mount&lt;/strong&gt; the &lt;strong&gt;hard drive&lt;/strong&gt; and access the root filesystem, as explained prior. And we give a quick reference to what could be done with the &lt;code&gt;/proc/keys&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;../../images/Attacking_Container_hardware-kernel.png&#34; alt=&#34;Attack Container Hardware and Kernel&#34;&gt;&lt;/p&gt;
+&lt;p&gt;The last technique, which seems to be very local-docker-installation related is the container with &lt;strong&gt;access to the Docker socket&lt;/strong&gt;. With access to the Docker socket, you can &lt;strong&gt;start&lt;/strong&gt; further &lt;strong&gt;container with “super-powers”&lt;/strong&gt;, which allows you previously explained techniques.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;../../images/Attacking_Container_socket.png&#34; alt=&#34;Attack Container ctrl plane&#34;&gt;&lt;/p&gt;
+&lt;p&gt;A detailed explanation of these attacks can be found on this blog &lt;a href=&#34;https://blog.nody.cc/posts/container-breakouts-part2/&#34;&gt;Container Breakouts – Part 1&lt;/a&gt;, &lt;a href=&#34;https://blog.nody.cc/posts/container-breakouts-part2/&#34;&gt;Container Breakouts – Part 2&lt;/a&gt; and &lt;a href=&#34;https://blog.nody.cc/posts/container-breakouts-part2/&#34;&gt;Container Breakouts – Part 3&lt;/a&gt;. You may now think “why do they include the Docker socket within the breakout list?”. That’s the point. Nowadays, a cloud container runtime may come in various flavors. You never know if the container is started within a Kubernetes environment or own-created orchestration layer. We will finally address the container breakout by the usage of the metadata API. The metadata API of the cloud is the control plane of the cloud, like the docker socket is the control plain of the local docker installation.&lt;/p&gt;
+&lt;p&gt;After discussing the various breakout techniques, we go through a short comparison from wide-spread cloud container runtimes. (We decided to let Kubernetes runtimes out of the comparison). The following screenshot shows the overview table.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;../../images/plattform-comp.png&#34; alt=&#34;Cloud Platform Comparison&#34;&gt;&lt;/p&gt;
+&lt;p&gt;The data is measured with &lt;a href=&#34;https://github.com/brompwnie/botb&#34;&gt;botb&lt;/a&gt; and &lt;a href=&#34;https://github.com/genuinetools/amicontained/&#34;&gt;amicontained&lt;/a&gt;. All technical details can be found on &lt;a href=&#34;https://github.com/NodyHub/bsidesmuc2020&#34;&gt;Github&lt;/a&gt;, including the scan results of both tools.&lt;/p&gt;
+&lt;p&gt;After summarization of the attack vectors, we go through the details of how &lt;a href=&#34;https://github.com/brompwnie/botb&#34;&gt;botb&lt;/a&gt; and &lt;a href=&#34;https://github.com/genuinetools/amicontained/&#34;&gt;amicontained&lt;/a&gt; can be used by you, maybe in the next assessment?&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;../../images/botb.png&#34; alt=&#34;BotB usage&#34;&gt;&lt;/p&gt;
+&lt;p&gt;With the knowledge about the attacks, we go through the mitigation techniques that can be used to prevent breakouts and tune the security of your sandbox. Finally, a conclusion and an outline with further work close the session.&lt;/p&gt;
+&lt;p&gt;We hope that you enjoyed the session and if you are interested to discuss content, do not hesitate and get in touch.&lt;/p&gt;
+&lt;p&gt;Cheers,&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://twitter.com/uchi_mata&#34;&gt;Matthias&lt;/a&gt; and &lt;a href=&#34;https://twitter.com/NodyTweet&#34;&gt;Jan&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&amp;ndash;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;../../publication/202008_bsides_muc.pdf&#34;&gt;Slides&lt;/a&gt; or &lt;a href=&#34;https://gurke.io/bsidesmuc2020&#34;&gt;Google Slides&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://youtu.be/5urnOPb-BbY?t=948&#34;&gt;Recording&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/NodyHub/bsidesmuc2020&#34;&gt;Scan results on GitHub&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.bsidesmunich.org/&#34;&gt;BSides Munich&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+    <item>
+      <title>Pentesting Cloud Sandboxes in the wild</title>
+      <link>http://nodyhub.github.io/publication/2020-bsidesmuc/</link>
+      <pubDate>Sat, 01 Aug 2020 15:11:49 +0200</pubDate>
+      
+      <guid>http://nodyhub.github.io/publication/2020-bsidesmuc/</guid>
+      <description>&lt;p&gt;Matthias Luft &amp;amp; Jan Harrie, Bsides Munich, Munich/Virtual, Germany&lt;/p&gt;
+&lt;h2 id=&#34;abstract&#34;&gt;Abstract&lt;/h2&gt;
+&lt;p&gt;Building on last year’s explanation of container workings under the hood (&lt;a href=&#34;https://2019.bsidesmunich.org/talks/01-03_Fucking-Containers/&#34;&gt;Fucking Containers - how do they work?&lt;/a&gt;), we explain several techniques for breaking out of misconfigured containers/container hosts. We will discuss the most common misconfigurations (such as extensive container privileges, exposed network services, mounted sockets, internal cluster privileges) and how to test for them. For each discussed attack vector, we will show how it can be automated (and integrated into build pipelines) using a tool of choice. Finally, a comparison of the well known container execution platforms (AWS, Azure, fly.io, GCP, Heroku) will be presented.&lt;/p&gt;
+&lt;h2 id=&#34;outline&#34;&gt;Outline&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Short Container Re-Cap (make sure to be familiar with &lt;a href=&#34;https://2019.bsidesmunich.org/talks/01-03_Fucking-Containers/&#34;&gt;Fucking Containers - how do they work?&lt;/a&gt;)&lt;/li&gt;
+&lt;li&gt;Attack Vectors
+&lt;ul&gt;
+&lt;li&gt;Container Privileges&lt;/li&gt;
+&lt;li&gt;Network Services (Generic, Cloud, Cluster)&lt;/li&gt;
+&lt;li&gt;Cluster Privileges&lt;/li&gt;
+&lt;li&gt;Sockets&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Testing how-to with botb and amicontained&lt;/li&gt;
+&lt;li&gt;Cloud Platform comparison&lt;/li&gt;
+&lt;li&gt;Conclusions&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;media&#34;&gt;Media&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;../202008_bsides_muc.pdf&#34;&gt;Slides&lt;/a&gt; or &lt;a href=&#34;https://gurke.io/bsidesmuc2020&#34;&gt;Google Slides&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/NodyHub/bsidesmuc2020&#34;&gt;Material&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://youtu.be/5urnOPb-BbY?t=948&#34;&gt;Recording&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;../../posts/bsides-munich-2020/&#34;&gt;Blogbost&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

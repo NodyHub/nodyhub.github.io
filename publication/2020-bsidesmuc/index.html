@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+        
+<meta charset="utf-8">
+<meta name="HandheldFriendly" content="True">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer-when-downgrade">
+
+<title>Pentesting Cloud Sandboxes in the wild  - Nody´s blog</title>
+<meta name="description" content="Blog with infosec content from Jan Harrie">
+
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://nodyhub.github.io/rss/">
+
+<link rel="icon" type="image/x-icon" href="http://nodyhub.github.io/favicon.ico">
+<link rel="apple-touch-icon-precomposed" href="http://nodyhub.github.io/favicon.png">
+
+<link rel="stylesheet" href="http://nodyhub.github.io/css/style.css?rnd=1609148254" />
+
+<meta property="og:title" content="Pentesting Cloud Sandboxes in the wild" />
+<meta property="og:description" content="Matthias Luft &amp; Jan Harrie, Bsides Munich, Munich/Virtual, Germany" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://nodyhub.github.io/publication/2020-bsidesmuc/" />
+<meta property="og:image" content="http://nodyhub.github.io/images/logo.png"/>
+<meta property="article:published_time" content="2020-08-01T15:11:49+02:00" />
+<meta property="article:modified_time" content="2020-08-01T15:11:49+02:00" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="http://nodyhub.github.io/images/logo.png"/>
+
+<meta name="twitter:title" content="Pentesting Cloud Sandboxes in the wild"/>
+<meta name="twitter:description" content="Matthias Luft &amp; Jan Harrie, Bsides Munich, Munich/Virtual, Germany"/>
+
+
+
+
+
+
+    
+</head>
+<body>
+    <div class="container">
+        <header> 
+            
+                <h1 class="site-header">
+    <a href="http://nodyhub.github.io/">Nody´s blog</a>
+</h1>
+<nav>
+    
+    
+    <a class="" href="/about/" title="About">About</a>
+    
+    <a class="" href="/tags/" title="Tags">Tags</a>
+    
+    <a class="" href="/posts/" title="Archive">Archive</a>
+    
+</nav>
+
+            
+        </header>
+        <main>
+            
+
+    <article class="post">
+        <header>
+            <h1>Pentesting Cloud Sandboxes in the wild</h1>
+        </header>
+        <div class="content">
+            <p>Matthias Luft &amp; Jan Harrie, Bsides Munich, Munich/Virtual, Germany</p>
+<h2 id="abstract">Abstract</h2>
+<p>Building on last year’s explanation of container workings under the hood (<a href="https://2019.bsidesmunich.org/talks/01-03_Fucking-Containers/">Fucking Containers - how do they work?</a>), we explain several techniques for breaking out of misconfigured containers/container hosts. We will discuss the most common misconfigurations (such as extensive container privileges, exposed network services, mounted sockets, internal cluster privileges) and how to test for them. For each discussed attack vector, we will show how it can be automated (and integrated into build pipelines) using a tool of choice. Finally, a comparison of the well known container execution platforms (AWS, Azure, fly.io, GCP, Heroku) will be presented.</p>
+<h2 id="outline">Outline</h2>
+<ul>
+<li>Short Container Re-Cap (make sure to be familiar with <a href="https://2019.bsidesmunich.org/talks/01-03_Fucking-Containers/">Fucking Containers - how do they work?</a>)</li>
+<li>Attack Vectors
+<ul>
+<li>Container Privileges</li>
+<li>Network Services (Generic, Cloud, Cluster)</li>
+<li>Cluster Privileges</li>
+<li>Sockets</li>
+</ul>
+</li>
+<li>Testing how-to with botb and amicontained</li>
+<li>Cloud Platform comparison</li>
+<li>Conclusions</li>
+</ul>
+<h2 id="media">Media</h2>
+<ul>
+<li><a href="../202008_bsides_muc.pdf">Slides</a> or <a href="https://gurke.io/bsidesmuc2020">Google Slides</a></li>
+<li><a href="https://github.com/NodyHub/bsidesmuc2020">Material</a></li>
+<li><a href="https://youtu.be/5urnOPb-BbY?t=948">Recording</a></li>
+<li><a href="../../posts/bsides-munich-2020/">Blogbost</a></li>
+</ul>
+        </div>
+        <div class="article-info">
+    
+        <div class="article-date">2020-08-01</div>
+    
+    <div class="article-taxonomies">
+        
+            
+                <ul class="article-tags">
+                    
+                        <li><a href="http://nodyhub.github.io/tags/docker">#Docker</a></li>
+                    
+                        <li><a href="http://nodyhub.github.io/tags/container">#Container</a></li>
+                    
+                        <li><a href="http://nodyhub.github.io/tags/breakout">#breakout</a></li>
+                    
+                        <li><a href="http://nodyhub.github.io/tags/security">#security</a></li>
+                    
+                </ul>
+        
+    </div>
+</div>
+
+    </article>
+    
+
+
+        </main>
+        <footer>
+            
+                <p>© Jan Harrie, 2020<br>
+Powered by <a target="_blank" href="https://gohugo.io/">Hugo</a>, theme <a target="_blank" href="https://github.com/mitrichius/hugo-theme-anubis">Anubis</a>.
+</p>
+            
+        </footer>
+    </div>
+</body>
+</html>

