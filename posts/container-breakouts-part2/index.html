@@ -16,7 +16,7 @@
 <link rel="icon" type="image/x-icon" href="https://nodyhub.github.io/favicon.ico">
 <link rel="apple-touch-icon-precomposed" href="https://nodyhub.github.io/favicon.png">
 
-<link rel="stylesheet" href="https://nodyhub.github.io/css/style.css?rnd=1609148403" />
+<link rel="stylesheet" href="https://nodyhub.github.io/css/style.css?rnd=1609148840" />
 
 <meta property="og:title" content="Container Breakouts – Part 2: Privileged Container" />
 <meta property="og:description" content="This post is part of a series and shows container breakout techniques that can be performed if a container is started privileged." />
@@ -81,7 +81,7 @@
 <p>There are multiple ways to escape from a privileged container. Let us have a look&hellip;</p>
 <h3 id="capabilities">Capabilities</h3>
 <p>We will now explore two techniques that can be used to break out of the container. It is important to note here that it is only possible to abuse the <a href="https://man7.org/linux/man-pages/man7/capabilities.7.html">capabilities</a>, because there is no <a href="https://man7.org/linux/man-pages/man2/seccomp.2.html">seccop</a> filter in place. This is the case if a container is started with <code>--privileged</code>. Docker containers are normally started with a seccomp filter enabled and give an additional layer of security.</p>
-<p>The available capabilities inside the container can be printed with the command <code>capsh --print</code>. The details about each capability can be taken from the man page (<code>man capavilities</code>). In case of a privileged container, all capabilities are available. An example output looks like following:</p>
+<p>The available capabilities inside the container can be printed with the command <code>capsh --print</code>. The details about each capability can be taken from the man page (<code>man capabilities</code>). In case of a privileged container, all capabilities are available. An example output looks like following:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">~# capsh --print
 Current: <span style="color:#f92672">=</span> cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_linux_immutable,cap_net_bind_service,cap_net_broadcast,cap_net_admin,cap_net_raw,cap_ipc_lock,cap_ipc_owner,cap_sys_module,cap_sys_rawio,cap_sys_chroot,cap_sys_ptrace,cap_sys_pacct,cap_sys_admin,cap_sys_boot,cap_sys_nice,cap_sys_resource,cap_sys_time,cap_sys_tty_config,cap_mknod,cap_lease,cap_audit_write,cap_audit_control,cap_setfcap,cap_mac_override,cap_mac_admin,cap_syslog,cap_wake_alarm,cap_block_suspend,cap_audit_read+eip
 Bounding set <span style="color:#f92672">=</span>cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_linux_immutable,cap_net_bind_service,cap_net_broadcast,cap_net_admin,cap_net_raw,cap_ipc_lock,cap_ipc_owner,cap_sys_module,cap_sys_rawio,cap_sys_chroot,cap_sys_ptrace,cap_sys_pacct,cap_sys_admin,cap_sys_boot,cap_sys_nice,cap_sys_resource,cap_sys_time,cap_sys_tty_config,cap_mknod,cap_lease,cap_audit_write,cap_audit_control,cap_setfcap,cap_mac_override,cap_mac_admin,cap_syslog,cap_wake_alarm,cap_block_suspend,cap_audit_read
