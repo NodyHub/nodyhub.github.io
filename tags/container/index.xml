@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Container on Nody´s blog</title>
-    <link>https://blog.nody.cc/tags/container/</link>
+    <link>//blog.nody.cc/tags/container/</link>
     <description>Nody´s blog (Container)</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Sun, 23 Aug 2020 16:30:00 +0200</lastBuildDate>
     
-    <atom:link href="https://blog.nody.cc/tags/container/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="//blog.nody.cc/tags/container/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Pentesting Cloud Sandboxes in the wild</title>
-      <link>https://blog.nody.cc/posts/bsides-munich-2020/</link>
+      <link>//blog.nody.cc/posts/bsides-munich-2020/</link>
       <pubDate>Sun, 23 Aug 2020 16:30:00 +0200</pubDate>
       
-      <guid>https://blog.nody.cc/posts/bsides-munich-2020/</guid>
+      <guid>//blog.nody.cc/posts/bsides-munich-2020/</guid>
       <description>&lt;p&gt;Matthias and I talked about cloud sandboxes on &lt;a href=&#34;https://2020.bsidesmunich.org/&#34;&gt;virtual BSides Munich 2020&lt;/a&gt;. This blogpost summarizes the content of the talk.&lt;/p&gt;
 &lt;p&gt;First, shout out to the BSides Munich Orga team to make the conference happen. Matthias and I were thankful to have the pleasure to contribute to the event. Furthermore, another thank you to the other speakers, who shared their research during this weird virtual-conference-times!&lt;/p&gt;
 &lt;p&gt;We started our talk with a short re-cap about containers, based on the amazing talk “Fucking Containers – how do they work?” from Andreas Krebs which was presented on BSides Munich 2019 (&lt;a href=&#34;https://2019.bsidesmunich.org/talks/01-03_Fucking-Containers/&#34;&gt;Ref&lt;/a&gt;, &lt;a href=&#34;https://raw.githubusercontent.com/BSidesMUC/BsidesMunich2019/master/files/01-03_Fucking-Containers.pdf&#34;&gt;Slides&lt;/a&gt;).&lt;/p&gt;
@@ -48,10 +48,10 @@
     
     <item>
       <title>Pentesting Cloud Sandboxes in the wild</title>
-      <link>https://blog.nody.cc/publication/2020-bsidesmuc/</link>
+      <link>//blog.nody.cc/publication/2020-bsidesmuc/</link>
       <pubDate>Sat, 01 Aug 2020 15:11:49 +0200</pubDate>
       
-      <guid>https://blog.nody.cc/publication/2020-bsidesmuc/</guid>
+      <guid>//blog.nody.cc/publication/2020-bsidesmuc/</guid>
       <description>&lt;p&gt;Matthias Luft &amp;amp; Jan Harrie, Bsides Munich, Munich/Virtual, Germany&lt;/p&gt;
 &lt;h2 id=&#34;abstract&#34;&gt;Abstract&lt;/h2&gt;
 &lt;p&gt;Building on last year’s explanation of container workings under the hood (&lt;a href=&#34;https://2019.bsidesmunich.org/talks/01-03_Fucking-Containers/&#34;&gt;Fucking Containers - how do they work?&lt;/a&gt;), we explain several techniques for breaking out of misconfigured containers/container hosts. We will discuss the most common misconfigurations (such as extensive container privileges, exposed network services, mounted sockets, internal cluster privileges) and how to test for them. For each discussed attack vector, we will show how it can be automated (and integrated into build pipelines) using a tool of choice. Finally, a comparison of the well known container execution platforms (AWS, Azure, fly.io, GCP, Heroku) will be presented.&lt;/p&gt;

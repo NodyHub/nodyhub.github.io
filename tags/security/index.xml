@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>security on Nody´s blog</title>
-    <link>https://blog.nody.cc/tags/security/</link>
+    <link>//blog.nody.cc/tags/security/</link>
     <description>Nody´s blog (security)</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Sun, 23 Aug 2020 16:30:00 +0200</lastBuildDate>
     
-    <atom:link href="https://blog.nody.cc/tags/security/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="//blog.nody.cc/tags/security/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Pentesting Cloud Sandboxes in the wild</title>
-      <link>https://blog.nody.cc/posts/bsides-munich-2020/</link>
+      <link>//blog.nody.cc/posts/bsides-munich-2020/</link>
       <pubDate>Sun, 23 Aug 2020 16:30:00 +0200</pubDate>
       
-      <guid>https://blog.nody.cc/posts/bsides-munich-2020/</guid>
+      <guid>//blog.nody.cc/posts/bsides-munich-2020/</guid>
       <description>&lt;p&gt;Matthias and I talked about cloud sandboxes on &lt;a href=&#34;https://2020.bsidesmunich.org/&#34;&gt;virtual BSides Munich 2020&lt;/a&gt;. This blogpost summarizes the content of the talk.&lt;/p&gt;
 &lt;p&gt;First, shout out to the BSides Munich Orga team to make the conference happen. Matthias and I were thankful to have the pleasure to contribute to the event. Furthermore, another thank you to the other speakers, who shared their research during this weird virtual-conference-times!&lt;/p&gt;
 &lt;p&gt;We started our talk with a short re-cap about containers, based on the amazing talk “Fucking Containers – how do they work?” from Andreas Krebs which was presented on BSides Munich 2019 (&lt;a href=&#34;https://2019.bsidesmunich.org/talks/01-03_Fucking-Containers/&#34;&gt;Ref&lt;/a&gt;, &lt;a href=&#34;https://raw.githubusercontent.com/BSidesMUC/BsidesMunich2019/master/files/01-03_Fucking-Containers.pdf&#34;&gt;Slides&lt;/a&gt;).&lt;/p&gt;
@@ -48,10 +48,10 @@
     
     <item>
       <title>Pentesting Cloud Sandboxes in the wild</title>
-      <link>https://blog.nody.cc/publication/2020-bsidesmuc/</link>
+      <link>//blog.nody.cc/publication/2020-bsidesmuc/</link>
       <pubDate>Sat, 01 Aug 2020 15:11:49 +0200</pubDate>
       
-      <guid>https://blog.nody.cc/publication/2020-bsidesmuc/</guid>
+      <guid>//blog.nody.cc/publication/2020-bsidesmuc/</guid>
       <description>&lt;p&gt;Matthias Luft &amp;amp; Jan Harrie, Bsides Munich, Munich/Virtual, Germany&lt;/p&gt;
 &lt;h2 id=&#34;abstract&#34;&gt;Abstract&lt;/h2&gt;
 &lt;p&gt;Building on last year’s explanation of container workings under the hood (&lt;a href=&#34;https://2019.bsidesmunich.org/talks/01-03_Fucking-Containers/&#34;&gt;Fucking Containers - how do they work?&lt;/a&gt;), we explain several techniques for breaking out of misconfigured containers/container hosts. We will discuss the most common misconfigurations (such as extensive container privileges, exposed network services, mounted sockets, internal cluster privileges) and how to test for them. For each discussed attack vector, we will show how it can be automated (and integrated into build pipelines) using a tool of choice. Finally, a comparison of the well known container execution platforms (AWS, Azure, fly.io, GCP, Heroku) will be presented.&lt;/p&gt;
@@ -81,10 +81,10 @@
     
     <item>
       <title>Container Breakouts – Part 3: Docker Socket</title>
-      <link>https://blog.nody.cc/posts/container-breakouts-part3/</link>
+      <link>//blog.nody.cc/posts/container-breakouts-part3/</link>
       <pubDate>Thu, 30 Jul 2020 14:20:35 +0200</pubDate>
       
-      <guid>https://blog.nody.cc/posts/container-breakouts-part3/</guid>
+      <guid>//blog.nody.cc/posts/container-breakouts-part3/</guid>
       <description>&lt;p&gt;This post is part of a series and shows container breakout techniques that can be performed if a container is started with a mounted Docker socket inside the container.&lt;/p&gt;
 &lt;p&gt;The following posts are part of the series:&lt;/p&gt;
 &lt;ul&gt;
@@ -187,10 +187,10 @@ lrwxrwxrwx &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; root root &l
     
     <item>
       <title>Container Breakouts – Part 2: Privileged Container</title>
-      <link>https://blog.nody.cc/posts/container-breakouts-part2/</link>
+      <link>//blog.nody.cc/posts/container-breakouts-part2/</link>
       <pubDate>Tue, 21 Jul 2020 15:42:19 +0200</pubDate>
       
-      <guid>https://blog.nody.cc/posts/container-breakouts-part2/</guid>
+      <guid>//blog.nody.cc/posts/container-breakouts-part2/</guid>
       <description>&lt;p&gt;This post is part of a series and shows container breakout techniques that can be performed if a container is started privileged.&lt;/p&gt;
 &lt;p&gt;The following posts are part of the series:&lt;/p&gt;
 &lt;ul&gt;
@@ -385,10 +385,10 @@ drwxr-xr-x  &lt;span style=&#34;color:#ae81ff&#34;&gt;10&lt;/span&gt; root root 
     
     <item>
       <title>Container Breakouts – Part 1: Access to root directory of the Host</title>
-      <link>https://blog.nody.cc/posts/container-breakouts-part1/</link>
+      <link>//blog.nody.cc/posts/container-breakouts-part1/</link>
       <pubDate>Wed, 15 Jul 2020 08:39:10 +0200</pubDate>
       
-      <guid>https://blog.nody.cc/posts/container-breakouts-part1/</guid>
+      <guid>//blog.nody.cc/posts/container-breakouts-part1/</guid>
       <description>&lt;p&gt;This post is part of a series and shows container breakout techniques that can be performed if a container is started with access to the host root directory.&lt;/p&gt;
 &lt;p&gt;The following posts are part of the series:&lt;/p&gt;
 &lt;ul&gt;
@@ -467,21 +467,21 @@ uid&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;0&lt;span style=&#34;
     
     <item>
       <title>Verify your Kubernetes Cluster Network Policies: From Faith to Proof</title>
-      <link>https://blog.nody.cc/posts/2020-06-kubernetes-network-policy-verification/</link>
+      <link>//blog.nody.cc/posts/2020-06-kubernetes-network-policy-verification/</link>
       <pubDate>Sat, 27 Jun 2020 11:39:55 +0200</pubDate>
       
-      <guid>https://blog.nody.cc/posts/2020-06-kubernetes-network-policy-verification/</guid>
+      <guid>//blog.nody.cc/posts/2020-06-kubernetes-network-policy-verification/</guid>
       <description>&lt;p&gt;Implement a technical check that verifies implemented security measurements. In case of network policy, try to establish a blocked network connection. Keep the checks as simple as possible and propagate the results in existing monitoring solution.&lt;/p&gt;
 &lt;h2 id=&#34;intro&#34;&gt;Intro&lt;/h2&gt;
 &lt;p&gt;Welcome to my first blog post. I decided to drop my first letters on one of my favoured research topics: &lt;a href=&#34;https://kubernetes.io/&#34;&gt;Kubernetes&lt;/a&gt;. To be more specific, this blog post addresses network policy verification in Kubernetes.&lt;/p&gt;
 &lt;p&gt;It is an ongoing discussion as a security consultant to rate if something &amp;ldquo;is secure&amp;rdquo; and to motivate people to trust in the recommended solution that its secure. People always argue and discuss about feelings – something feels not secure // I feel not confi with the solution // are you sure that it is secure // whatever. So, you may now ask yourself how to handle such situations? To be honest, one must find a way to convince people that the introduced approach is &amp;ldquo;secure&amp;rdquo;. As a technician I have trust in my solutions, but how to convince someone who has no trust?&lt;/p&gt;
-&lt;p&gt;This blog post addresses continuous verification of introduced security measurements, with &lt;a href=&#34;https://blog.nody.cc/posts/kubernetes-basics/#network-policies&#34;&gt;Kubernetes Network Policies&lt;/a&gt; as an example.&lt;/p&gt;
+&lt;p&gt;This blog post addresses continuous verification of introduced security measurements, with &lt;a href=&#34;//blog.nody.cc/posts/kubernetes-basics/#network-policies&#34;&gt;Kubernetes Network Policies&lt;/a&gt; as an example.&lt;/p&gt;
 &lt;h2 id=&#34;technical-background&#34;&gt;Technical Background&lt;/h2&gt;
 &lt;p&gt;For a basic understanding, it would be from relevance to have some knowledge in the following topics:&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;https://blog.nody.cc/posts/kubernetes-basics/#kubernetes-itself&#34;&gt;Kubernetes Basics&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://blog.nody.cc/posts/kubernetes-basics/#networking&#34;&gt;Kubernetes Networking&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://blog.nody.cc/posts/kubernetes-basics/#network-policies&#34;&gt;Kubernetes Network Policies&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;//blog.nody.cc/posts/kubernetes-basics/#kubernetes-itself&#34;&gt;Kubernetes Basics&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;//blog.nody.cc/posts/kubernetes-basics/#networking&#34;&gt;Kubernetes Networking&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;//blog.nody.cc/posts/kubernetes-basics/#network-policies&#34;&gt;Kubernetes Network Policies&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2 id=&#34;solution&#34;&gt;Solution&lt;/h2&gt;
 &lt;p&gt;I am absolutely not a mathematician or old Greek, but &lt;strong&gt;reductio ad absurdum&lt;/strong&gt; describes how we are going to propose an approach to convert my trust into provable trust.&lt;/p&gt;
@@ -493,7 +493,7 @@ uid&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;0&lt;span style=&#34;
 &lt;p&gt;The magic question is now, how can we &lt;strong&gt;continuously monitor&lt;/strong&gt; if security measurements stays valid? It’s easy – we use the &lt;strong&gt;same approach as the rest of the cluster workload&lt;/strong&gt; is monitored.&lt;/p&gt;
 &lt;p&gt;If a Kubernetes cluster is used to ship an application, somewhere the health state of the Pods is monitored. Normally, there is a dashboard with fancy pie charts and other useful information and typically there is also a place that shows which containers are up and running. If we want to propagate the &lt;strong&gt;failure&lt;/strong&gt; of a &lt;strong&gt;security checks&lt;/strong&gt; into the dashboard the easiest way is to let the container &lt;strong&gt;crash continuously&lt;/strong&gt;. The status of the crashed container is &lt;strong&gt;propagated into&lt;/strong&gt; the normal &lt;strong&gt;container monitoring lifecycle&lt;/strong&gt; and follow-up actions must be performed.&lt;/p&gt;
 &lt;h3 id=&#34;technical-implementation&#34;&gt;Technical Implementation&lt;/h3&gt;
-&lt;p&gt;As an example how to create a proof of concept for a security measurement I decided to implement a check for &lt;a href=&#34;https://blog.nody.cc/posts/kubernetes-basics/#network-policies&#34;&gt;Network Policies&lt;/a&gt;. What is the easiest way to check if traffic is filter? Right – try to connect to the target should not be available. In this situation we may also be also interested if certain other hosts are available.&lt;/p&gt;
+&lt;p&gt;As an example how to create a proof of concept for a security measurement I decided to implement a check for &lt;a href=&#34;//blog.nody.cc/posts/kubernetes-basics/#network-policies&#34;&gt;Network Policies&lt;/a&gt;. What is the easiest way to check if traffic is filter? Right – try to connect to the target should not be available. In this situation we may also be also interested if certain other hosts are available.&lt;/p&gt;
 &lt;p&gt;That sounds like a small project, which can be implemented in a few lines of code. That is perfect to start learning a programming language like Rust, Go or classy C, right? No – absolutely not in our situation. We need a quick implementable check for our measurement. The check should be easy understandable, implementable, reproducible, and so on. It is just a TCP connection – so I decided to use netcat and some bash and that’s it. The check itself fits into one line:&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;echo foo | ncat $TARGET $PORT &amp;gt; /dev/null 2&amp;gt;&amp;amp;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;If a connection can be established the command above will be zero. If the command above fails, because a connection cannot be established, the return code is not zero. The evaluation can also be done in one line, as following:&lt;/p&gt;
@@ -560,10 +560,10 @@ test-tcp-564f4b9b58-spjmp   1/1     Running            &lt;span style=&#34;color
     
     <item>
       <title>Training: Docker, Kubernetes &amp; Security in Enterprise Environments</title>
-      <link>https://blog.nody.cc/publication/2020-troopers/</link>
+      <link>//blog.nody.cc/publication/2020-troopers/</link>
       <pubDate>Fri, 20 Mar 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://blog.nody.cc/publication/2020-troopers/</guid>
+      <guid>//blog.nody.cc/publication/2020-troopers/</guid>
       <description>&lt;p&gt;Kevin Kelpen &amp;amp; Jan Harrie, TROOPERS20, Heidelberg, Germany&lt;/p&gt;
 &lt;h2 id=&#34;abstract&#34;&gt;Abstract&lt;/h2&gt;
 &lt;p&gt;Container, Microservices, Kubernetes - all of those terms heavily dominate modern application development teams and processes. This training will explain the key technologies behind those terms and focus on the following main questions:&lt;/p&gt;
@@ -604,10 +604,10 @@ test-tcp-564f4b9b58-spjmp   1/1     Running            &lt;span style=&#34;color
     
     <item>
       <title>How to Secure OpenShift Environments and What Happens If You Don´t</title>
-      <link>https://blog.nody.cc/publication/2019-devseccon/</link>
+      <link>//blog.nody.cc/publication/2019-devseccon/</link>
       <pubDate>Wed, 20 Nov 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://blog.nody.cc/publication/2019-devseccon/</guid>
+      <guid>//blog.nody.cc/publication/2019-devseccon/</guid>
       <description>&lt;p&gt;Jan Harrie, DevSecCon, London, United Kingdom&lt;/p&gt;
 &lt;h2 id=&#34;abstract&#34;&gt;Abstract&lt;/h2&gt;
 &lt;p&gt;OpenShift by Red Hat is one of the major Platform as a Service (PaaS) solutions on the market. It is used to automatically deploy Kubernetes clusters and provides useful extensions for cluster management mixed with some magic under the hood.
@@ -623,10 +623,10 @@ In this talk, I will explain which configuration parameters of an OpenShift envi
     
     <item>
       <title>Das „s“ in DevOps steht für Security</title>
-      <link>https://blog.nody.cc/publication/2019-basta/</link>
+      <link>//blog.nody.cc/publication/2019-basta/</link>
       <pubDate>Thu, 19 Sep 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://blog.nody.cc/publication/2019-basta/</guid>
+      <guid>//blog.nody.cc/publication/2019-basta/</guid>
       <description>&lt;p&gt;Jan Harrie, BASTA! Autumn 2019, Mainz, Germany&lt;/p&gt;
 &lt;h2 id=&#34;abstract&#34;&gt;Abstract&lt;/h2&gt;
 &lt;p&gt;DevOps ermöglicht Unternehmen Programmbausteine schneller, zuverlässiger und reproduzierbarer zu entwickeln und in die Software zu integrieren. Häufig bleibt jedoch die Frage ungeklärt, wer sich um die Sicherheit innerhalb des DevOps-Prozesses kümmert. Aufgrund der kurzen Releasezyklen ist die Durchführung von umfänglichen Sicherheitsüberprüfungen für jedes Release der Software nicht praktikabel. In diesem Vortrag wird eine Methode zur Etablierung von Sicherheitsmaßnahmen in modernen DevOps-Umgebungen vorgestellt und aufgezeigt, wie durch Standardisierung die Kontrolle über agile Entwicklungsprozesse erreicht werden kann, ohne diese zu sehr zu beschränken. Durch den Vortrag wird der Zuhörer in die Lage versetzt, Security-Quality-Gates in seiner Entwicklungs-Pipeline zu etablieren.&lt;/p&gt;
@@ -639,10 +639,10 @@ In this talk, I will explain which configuration parameters of an OpenShift envi
     
     <item>
       <title>Docker, CI/CD &amp; DevOps Security</title>
-      <link>https://blog.nody.cc/publication/2019-ish/</link>
+      <link>//blog.nody.cc/publication/2019-ish/</link>
       <pubDate>Wed, 08 May 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://blog.nody.cc/publication/2019-ish/</guid>
+      <guid>//blog.nody.cc/publication/2019-ish/</guid>
       <description>&lt;p&gt;Christoph Klaaßen &amp;amp; Jan Harrie, ISH Summit day, Munich, Germany&lt;/p&gt;
 &lt;h2 id=&#34;content&#34;&gt;Content&lt;/h2&gt;
 &lt;p&gt;Discuss live with participants out of the industry about security aspects of modern and agile software development, -deployment and -operation.&lt;/p&gt;
@@ -677,10 +677,10 @@ In this talk, I will explain which configuration parameters of an OpenShift envi
     
     <item>
       <title>TROOPERS19</title>
-      <link>https://blog.nody.cc/publication/2019-troopers/</link>
+      <link>//blog.nody.cc/publication/2019-troopers/</link>
       <pubDate>Wed, 20 Mar 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://blog.nody.cc/publication/2019-troopers/</guid>
+      <guid>//blog.nody.cc/publication/2019-troopers/</guid>
       <description>&lt;p&gt;Heidelberg, Germany&lt;/p&gt;
 &lt;h2 id=&#34;threat-modelling-and-beyond-for-cisco-aci&#34;&gt;Threat Modelling and Beyond for Cisco ACI&lt;/h2&gt;
 &lt;p&gt;Frank Block &amp;amp; Jan Harrie&lt;/p&gt;
@@ -733,10 +733,10 @@ In this talk, I will explain which configuration parameters of an OpenShift envi
     
     <item>
       <title>Attacking VMware NSX</title>
-      <link>https://blog.nody.cc/publication/2018-h2hc/</link>
+      <link>//blog.nody.cc/publication/2018-h2hc/</link>
       <pubDate>Mon, 17 Sep 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://blog.nody.cc/publication/2018-h2hc/</guid>
+      <guid>//blog.nody.cc/publication/2018-h2hc/</guid>
       <description>&lt;p&gt;Matthias Luft &amp;amp; Jan Harrie, H2HC, São Paulo, Brazil&lt;/p&gt;
 &lt;h2 id=&#34;abstract&#34;&gt;Abstract&lt;/h2&gt;
 &lt;p&gt;In this presentation we will describe how we performed and still are performing an offensive security analysis of VMware&amp;rsquo;s SDN solution NSX. NSX integrates deeply into VMware&amp;rsquo;s virtualization infrastructure and provides network filtering features in a centrally managed, hypervisor-based micro segmentation way. The deep virtualization integration resulted in challenges that we will address in this talk. For example, we will detail how to analyze ESXi kernel modules, both in a debugging and static code analysis way. We will also provide an attack vector analysis based on the NSX architecture and communication protocols as well as fuzzing results and technologies for the kernel modules and overlay networking components.&lt;/p&gt;

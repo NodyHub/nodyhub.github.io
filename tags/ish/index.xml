@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>ish on Nody´s blog</title>
-    <link>https://blog.nody.cc/tags/ish/</link>
+    <link>//blog.nody.cc/tags/ish/</link>
     <description>Nody´s blog (ish)</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Wed, 08 May 2019 00:00:00 +0000</lastBuildDate>
     
-    <atom:link href="https://blog.nody.cc/tags/ish/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="//blog.nody.cc/tags/ish/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Docker, CI/CD &amp; DevOps Security</title>
-      <link>https://blog.nody.cc/publication/2019-ish/</link>
+      <link>//blog.nody.cc/publication/2019-ish/</link>
       <pubDate>Wed, 08 May 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://blog.nody.cc/publication/2019-ish/</guid>
+      <guid>//blog.nody.cc/publication/2019-ish/</guid>
       <description>&lt;p&gt;Christoph Klaaßen &amp;amp; Jan Harrie, ISH Summit day, Munich, Germany&lt;/p&gt;
 &lt;h2 id=&#34;content&#34;&gt;Content&lt;/h2&gt;
 &lt;p&gt;Discuss live with participants out of the industry about security aspects of modern and agile software development, -deployment and -operation.&lt;/p&gt;

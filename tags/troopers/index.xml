@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>troopers on Nody´s blog</title>
-    <link>https://blog.nody.cc/tags/troopers/</link>
+    <link>//blog.nody.cc/tags/troopers/</link>
     <description>Nody´s blog (troopers)</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Fri, 20 Mar 2020 00:00:00 +0000</lastBuildDate>
     
-    <atom:link href="https://blog.nody.cc/tags/troopers/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="//blog.nody.cc/tags/troopers/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Training: Docker, Kubernetes &amp; Security in Enterprise Environments</title>
-      <link>https://blog.nody.cc/publication/2020-troopers/</link>
+      <link>//blog.nody.cc/publication/2020-troopers/</link>
       <pubDate>Fri, 20 Mar 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://blog.nody.cc/publication/2020-troopers/</guid>
+      <guid>//blog.nody.cc/publication/2020-troopers/</guid>
       <description>&lt;p&gt;Kevin Kelpen &amp;amp; Jan Harrie, TROOPERS20, Heidelberg, Germany&lt;/p&gt;
 &lt;h2 id=&#34;abstract&#34;&gt;Abstract&lt;/h2&gt;
 &lt;p&gt;Container, Microservices, Kubernetes - all of those terms heavily dominate modern application development teams and processes. This training will explain the key technologies behind those terms and focus on the following main questions:&lt;/p&gt;
@@ -57,10 +57,10 @@
     
     <item>
       <title>TROOPERS19</title>
-      <link>https://blog.nody.cc/publication/2019-troopers/</link>
+      <link>//blog.nody.cc/publication/2019-troopers/</link>
       <pubDate>Wed, 20 Mar 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://blog.nody.cc/publication/2019-troopers/</guid>
+      <guid>//blog.nody.cc/publication/2019-troopers/</guid>
       <description>&lt;p&gt;Heidelberg, Germany&lt;/p&gt;
 &lt;h2 id=&#34;threat-modelling-and-beyond-for-cisco-aci&#34;&gt;Threat Modelling and Beyond for Cisco ACI&lt;/h2&gt;
 &lt;p&gt;Frank Block &amp;amp; Jan Harrie&lt;/p&gt;
