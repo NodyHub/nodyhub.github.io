@@ -761,6 +761,7 @@ In this talk, I will explain which configuration parameters of an OpenShift envi
 &lt;li&gt;&lt;a href=&#34;https://twitter.com/NodyTweet&#34;&gt;Twitter&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;https://github.com/NodyHub&#34;&gt;GitHub&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;https://hub.docker.com/u/nodyd&#34;&gt;Docker Hub&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://packetwars.com/&#34;&gt;Charity Packetwars challenge building since 2018&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2 id=&#34;projects&#34;&gt;Projects&lt;/h2&gt;
 &lt;ul&gt;
@@ -773,11 +774,14 @@ In this talk, I will explain which configuration parameters of an OpenShift envi
 &lt;ul&gt;
 &lt;li&gt;Training: &lt;a href=&#34;../publication/2020-troopers/&#34;&gt;Docker, Kubernetes &amp;amp; Security in Enterprise Environments&lt;/a&gt;, TROOPERS20, Heidelberg, Germany&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;../publication/2020-bsidesmuc/&#34;&gt;Pentesting Cloud Sandboxes in the wild&lt;/a&gt;, BSides Munich, Munich/Virtual, Germany&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://packetwars.com/432/crack-jack-find-the-prize&#34;&gt;Packetwars – Cracker Jack: Find The Prize&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://packetwars.com/447/hsk-packetwars-invitational-update&#34;&gt;Packetwars – HSK Packetwars Invitational&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h3 id=&#34;2019&#34;&gt;2019&lt;/h3&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;../publication/2019-troopers/#threat-modelling-and-beyond-for-cisco-aci&#34;&gt;Threat Modelling and Beyond for Cisco ACI&lt;/a&gt;, TROOPERS19, Heidelberg, Germany&lt;/li&gt;
 &lt;li&gt;Training: &lt;a href=&#34;../publication/2019-troopers/#docker-kubernetes--security-in-enterprise-environments&#34;&gt;Docker, Kubernetes &amp;amp; Security in Enterprise Environments&lt;/a&gt;, TROOPERS19, Heidelberg, Germany&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://packetwars.com/396/heading-to-heidelberg-for-troopers-2019&#34;&gt;Packetwars – Heading to Heidelberg for Troopers 2019&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;../publication/2019-ish&#34;&gt;Docker, CI/CD &amp;amp; DevOps Security&lt;/a&gt;, ISH Summit day, Munich, Germany&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;../publication/2019-basta&#34;&gt;Das „s“ in DevOps steht für Security&lt;/a&gt;, BASTA! Autumn 2019, Mainz, Germany&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;../publication/2019-devseccon&#34;&gt;How to Secure OpenShift Environments and What Happens If You Don´t&lt;/a&gt;, DevSecCon, London, United Kingdom&lt;/li&gt;
