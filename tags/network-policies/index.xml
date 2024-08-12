@@ -2,22 +2,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Network Policies on Nody´s blog</title>
-    <link>blog.nody.cc/tags/network-policies/</link>
+    <link>https://nodyhub.github.io/tags/network-policies/</link>
     <description>Recent content in Network Policies on Nody´s blog</description>
     <image>
       <title>Nody´s blog</title>
-      <url>blog.nody.cc/images/logo.png</url>
-      <link>blog.nody.cc/images/logo.png</link>
+      <url>https://nodyhub.github.io/images/logo.png</url>
+      <link>https://nodyhub.github.io/images/logo.png</link>
     </image>
     <generator>Hugo -- 0.128.1</generator>
     <language>en-us</language>
     <lastBuildDate>Sat, 27 Jun 2020 11:39:55 +0200</lastBuildDate>
-    <atom:link href="blog.nody.cc/tags/network-policies/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://nodyhub.github.io/tags/network-policies/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Verify your Kubernetes Cluster Network Policies: From Faith to Proof</title>
-      <link>blog.nody.cc/posts/2020-06-kubernetes-network-policy-verification/</link>
+      <link>https://nodyhub.github.io/posts/2020-06-kubernetes-network-policy-verification/</link>
       <pubDate>Sat, 27 Jun 2020 11:39:55 +0200</pubDate>
-      <guid>blog.nody.cc/posts/2020-06-kubernetes-network-policy-verification/</guid>
+      <guid>https://nodyhub.github.io/posts/2020-06-kubernetes-network-policy-verification/</guid>
       <description>&lt;p&gt;Implement a technical check that verifies implemented security measurements. In case of network policy, try to establish a blocked network connection. Keep the checks as simple as possible and propagate the results in existing monitoring solution.&lt;/p&gt;</description>
     </item>
   </channel>

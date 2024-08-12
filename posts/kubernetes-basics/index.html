@@ -9,16 +9,16 @@
 <meta name="keywords" content="Kubernetes">
 <meta name="description" content="This blogpost is intended to be a background knowledge section for further posts. The content is all around Kubernetes basic principles and reflects more a dictionary then a legitim blog post. The section itself may not explain every nuance of the topic – only as much as necessary as needed in other posts.">
 <meta name="author" content="Jan Harrie">
-<link rel="canonical" href="blog.nody.cc/posts/kubernetes-basics/">
-<link crossorigin="anonymous" href="blog.nody.cc/assets/css/stylesheet.fc220c15db4aef0318bbf30adc45d33d4d7c88deff3238b23eb255afdc472ca6.css" integrity="sha256-/CIMFdtK7wMYu/MK3EXTPU18iN7/MjiyPrJVr9xHLKY=" rel="preload stylesheet" as="style">
-<link rel="icon" href="blog.nody.cc/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="blog.nody.cc/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="blog.nody.cc/favicon-32x32.png">
-<link rel="apple-touch-icon" href="blog.nody.cc/apple-touch-icon.png">
-<link rel="mask-icon" href="blog.nody.cc/safari-pinned-tab.svg">
+<link rel="canonical" href="https://nodyhub.github.io/posts/kubernetes-basics/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.fc220c15db4aef0318bbf30adc45d33d4d7c88deff3238b23eb255afdc472ca6.css" integrity="sha256-/CIMFdtK7wMYu/MK3EXTPU18iN7/MjiyPrJVr9xHLKY=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://nodyhub.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://nodyhub.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://nodyhub.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://nodyhub.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://nodyhub.github.io/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="blog.nody.cc/posts/kubernetes-basics/">
+<link rel="alternate" hreflang="en" href="https://nodyhub.github.io/posts/kubernetes-basics/">
 <noscript>
     <style>
         #theme-toggle,
@@ -61,14 +61,14 @@
 <meta property="og:title" content="Kubernetes Basics and Principles" />
 <meta property="og:description" content="This blogpost is intended to be a background knowledge section for further posts. The content is all around Kubernetes basic principles and reflects more a dictionary then a legitim blog post. The section itself may not explain every nuance of the topic – only as much as necessary as needed in other posts." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="blog.nody.cc/posts/kubernetes-basics/" />
-<meta property="og:image" content="blog.nody.cc/images/logo.png" />
+<meta property="og:url" content="https://nodyhub.github.io/posts/kubernetes-basics/" />
+<meta property="og:image" content="https://nodyhub.github.io/images/logo.png" />
 <meta property="article:section" content="posts" />
 
 
 
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:image" content="blog.nody.cc/images/logo.png" />
+<meta name="twitter:image" content="https://nodyhub.github.io/images/logo.png" />
 <meta name="twitter:title" content="Kubernetes Basics and Principles"/>
 <meta name="twitter:description" content="This blogpost is intended to be a background knowledge section for further posts. The content is all around Kubernetes basic principles and reflects more a dictionary then a legitim blog post. The section itself may not explain every nuance of the topic – only as much as necessary as needed in other posts."/>
 
@@ -82,13 +82,13 @@
       "@type": "ListItem",
       "position":  1 ,
       "name": "Posts",
-      "item": "blog.nody.cc/posts/"
+      "item": "https://nodyhub.github.io/posts/"
     }, 
     {
       "@type": "ListItem",
       "position":  2 ,
       "name": "Kubernetes Basics and Principles",
-      "item": "blog.nody.cc/posts/kubernetes-basics/"
+      "item": "https://nodyhub.github.io/posts/kubernetes-basics/"
     }
   ]
 }
@@ -106,7 +106,7 @@
   "articleBody": "This blogpost is intended to be a background knowledge section for further posts. The content is all around Kubernetes basic principles and reflects more a dictionary then a legitim blog post. The section itself may not explain every nuance of the topic – only as much as necessary as needed in other posts.\nThe list of topics and explanations may be updated over the time.\nKubernetes itself Kubernetes is a production-grade container orchestration solution that is available on all modern cloud provider for executing and orchestrating containerized applications. The applications are distributed over multiple nodes, which execute the application containers. The container itself are executed by the installed container runtime interface, while the management of the containers is handled by Kubernetes.\nKubernetes offers fine-grained permission management capabilities that can be set for user and groups – implemented by Role Based Access Control (RBAC). The scope can be set to the overall cluster or only to a Namespace. A best-practice to develop a cluster application is to assign projects to its own or multiple Namespaces and hand over the project team administrative access in the development environment. The administrator can manage service accounts, roles, storage, services, pods and further namespace scoped resources. More details about Kubernetes can be read in the article What is Kubernetes?.\nThe most interesting part is that an administrator can install and configure the cluster and slice it into pieces, which can be managed within these pieces independent.\nNetworking One of the Kubernetes advantages (maybe also disadvantages) is that it is built like a big and flexible framework. Besides different storage classes and different authentication provider, the implementation of the Cluster Networking can be exchanged. Kubernetes offers the flexibility to set for the overall cluster one network plugin. These network plugins are created and maintained independent of the Kubernetes project, like Calico or Cilium. Even the cloud provider like AWS implement their own plugins for an optimal integration into the cloud environment. The decision which network plugin depends on the requirements. Requirements can be reliability, encryption, speed, or Network Policies. Only one network plugin can be configured for a cluster.\nNetwork Policies Network Policies are the kind of resources in Kubernetes that can be used to define stateless firewall rules for managed cluster workload. The policies are applied on Pod’s, namespaces or a combination of namespaces and pods.\nNetwork Policies are defined on an allow-listing approach and deployed in a namespace. The policy starts with a pod selection – based on the label – on which pod’s it should be applied. Hence, the same labels can be set to different pods, a group selection is also possible. If the Network Policy should be valid for every resource, a wild-card selector ({}) can even be used. This selection defines on which resource the rule should be applied. The next part is if it is an ingress or an egress rule and which ports (OSI layer 4) are allowed – the port is optional. Finally, the rule defines the network communication opposite. The opposite is a pod, a namespace, a combination of pod and namespace or IP block in CIDR notation. Pod and namespace are selected based on the labels, which must have been set previously. If no Network Policy is configured for a pod, the pod can communicate over the network without any restriction.\nA best practice approach is to deploy a deny all network policy and configure in an explicit allow-listing approach intended communication paths. But, be aware, this may escalate quickly 😉\nLabel and Selectors Label and Selectors is the concept in Kubernetes, which is used to perform group operations on similar resources\nBefore a resource can be selected, these resources must be labelled. Kubernetes offers the feature to label each resource with key value pairs. These key value pairs can be selected freely, e.g., foo: bar, stage: dev or app: frontend. Labels can be set to almost every object (not sure if it is possible to label all resources). The semantic of these labels is only in the interpretation of the people that set these labels. Okay, nowadays there might be technical resources that depend on such labels to make decisions. Objects from one type can be selected by selectors. These selectors are analogous to the labels and must match labels that have been previous set, e.g., foo: bar, stage: dev or app: frontend.\n",
   "wordCount" : "729",
   "inLanguage": "en",
-  "image": "blog.nody.cc/images/logo.png","datePublished": "0001-01-01T00:00:00Z",
+  "image": "https://nodyhub.github.io/images/logo.png","datePublished": "0001-01-01T00:00:00Z",
   "dateModified": "0001-01-01T00:00:00Z",
   "author":{
     "@type": "Person",
@@ -114,14 +114,14 @@
   },
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "blog.nody.cc/posts/kubernetes-basics/"
+    "@id": "https://nodyhub.github.io/posts/kubernetes-basics/"
   },
   "publisher": {
     "@type": "Organization",
     "name": "Nody´s blog",
     "logo": {
       "@type": "ImageObject",
-      "url": "blog.nody.cc/favicon.ico"
+      "url": "https://nodyhub.github.io/favicon.ico"
     }
   }
 }
@@ -143,7 +143,7 @@
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="blog.nody.cc/" accesskey="h" title="Nody´s blog (Alt + H)">Nody´s blog</a>
+            <a href="https://nodyhub.github.io/" accesskey="h" title="Nody´s blog (Alt + H)">Nody´s blog</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -169,17 +169,17 @@
         </div>
         <ul id="menu">
             <li>
-                <a href="blog.nody.cc/blog.nody.cc/about/" title="About">
+                <a href="https://nodyhub.github.io/about/" title="About">
                     <span>About</span>
                 </a>
             </li>
             <li>
-                <a href="blog.nody.cc/blog.nody.cc/tags/" title="Tags">
+                <a href="https://nodyhub.github.io/tags/" title="Tags">
                     <span>Tags</span>
                 </a>
             </li>
             <li>
-                <a href="blog.nody.cc/blog.nody.cc/posts/" title="Archive">
+                <a href="https://nodyhub.github.io/posts/" title="Archive">
                     <span>Archive</span>
                 </a>
             </li>
@@ -219,14 +219,14 @@ But, be aware, this may escalate quickly 😉</p>
 
   <footer class="post-footer">
     <ul class="post-tags">
-      <li><a href="blog.nody.cc/tags/kubernetes/">Kubernetes</a></li>
+      <li><a href="https://nodyhub.github.io/tags/kubernetes/">Kubernetes</a></li>
     </ul>
   </footer>
 </article>
     </main>
     
 <footer class="footer">
-        <span>&copy; 2024 <a href="blog.nody.cc/">Nody´s blog</a></span> · 
+        <span>&copy; 2024 <a href="https://nodyhub.github.io/">Nody´s blog</a></span> · 
 
     <span>
         Powered by

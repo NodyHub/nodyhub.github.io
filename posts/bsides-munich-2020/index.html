@@ -9,16 +9,16 @@
 <meta name="keywords" content="Docker, Container, breakout, security">
 <meta name="description" content="Matthias and I talked about cloud sandboxes on virtual BSides Munich 2020. This blogpost summarizes the content of the talk.">
 <meta name="author" content="Jan Harrie">
-<link rel="canonical" href="blog.nody.cc/posts/bsides-munich-2020/">
-<link crossorigin="anonymous" href="blog.nody.cc/assets/css/stylesheet.fc220c15db4aef0318bbf30adc45d33d4d7c88deff3238b23eb255afdc472ca6.css" integrity="sha256-/CIMFdtK7wMYu/MK3EXTPU18iN7/MjiyPrJVr9xHLKY=" rel="preload stylesheet" as="style">
-<link rel="icon" href="blog.nody.cc/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="blog.nody.cc/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="blog.nody.cc/favicon-32x32.png">
-<link rel="apple-touch-icon" href="blog.nody.cc/apple-touch-icon.png">
-<link rel="mask-icon" href="blog.nody.cc/safari-pinned-tab.svg">
+<link rel="canonical" href="https://nodyhub.github.io/posts/bsides-munich-2020/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.fc220c15db4aef0318bbf30adc45d33d4d7c88deff3238b23eb255afdc472ca6.css" integrity="sha256-/CIMFdtK7wMYu/MK3EXTPU18iN7/MjiyPrJVr9xHLKY=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://nodyhub.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://nodyhub.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://nodyhub.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://nodyhub.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://nodyhub.github.io/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="blog.nody.cc/posts/bsides-munich-2020/">
+<link rel="alternate" hreflang="en" href="https://nodyhub.github.io/posts/bsides-munich-2020/">
 <noscript>
     <style>
         #theme-toggle,
@@ -61,14 +61,14 @@
 <meta property="og:title" content="Pentesting Cloud Sandboxes in the wild" />
 <meta property="og:description" content="Matthias and I talked about cloud sandboxes on virtual BSides Munich 2020. This blogpost summarizes the content of the talk." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="blog.nody.cc/posts/bsides-munich-2020/" />
-<meta property="og:image" content="blog.nody.cc/images/logo.png" />
+<meta property="og:url" content="https://nodyhub.github.io/posts/bsides-munich-2020/" />
+<meta property="og:image" content="https://nodyhub.github.io/images/logo.png" />
 <meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2020-08-23T16:30:00+02:00" />
 <meta property="article:modified_time" content="2020-08-23T16:30:00+02:00" />
 
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:image" content="blog.nody.cc/images/logo.png" />
+<meta name="twitter:image" content="https://nodyhub.github.io/images/logo.png" />
 <meta name="twitter:title" content="Pentesting Cloud Sandboxes in the wild"/>
 <meta name="twitter:description" content="Matthias and I talked about cloud sandboxes on virtual BSides Munich 2020. This blogpost summarizes the content of the talk."/>
 
@@ -82,13 +82,13 @@
       "@type": "ListItem",
       "position":  1 ,
       "name": "Posts",
-      "item": "blog.nody.cc/posts/"
+      "item": "https://nodyhub.github.io/posts/"
     }, 
     {
       "@type": "ListItem",
       "position":  2 ,
       "name": "Pentesting Cloud Sandboxes in the wild",
-      "item": "blog.nody.cc/posts/bsides-munich-2020/"
+      "item": "https://nodyhub.github.io/posts/bsides-munich-2020/"
     }
   ]
 }
@@ -106,7 +106,7 @@
   "articleBody": "Matthias and I talked about cloud sandboxes on virtual BSides Munich 2020. This blogpost summarizes the content of the talk.\nFirst, shout out to the BSides Munich Orga team to make the conference happen. Matthias and I were thankful to have the pleasure to contribute to the event. Furthermore, another thank you to the other speakers, who shared their research during this weird virtual-conference-times!\nWe started our talk with a short re-cap about containers, based on the amazing talk “Fucking Containers – how do they work?” from Andreas Krebs which was presented on BSides Munich 2019 (Ref, Slides).\nAfter the re-cap and disclaimer, we start to go through well-known container breakout techniques. To make a long story short, we start with a root filesystem, which is accessible from a container. In that case, you have to leverage basic Linux privileges escalation techniques, by abusing services from the host system.\nAfterward, we address the configuration issue, which may occur if you have access to the Linux kernel by a writable /sys directory. In that way, you can create a call-back script that is triggered if a device is plugged into the system – which can also be simulated. Next breakout would be by exploitation of the existence of the capability CAP_SYS_MODULE to load kernel modules and the capability CAP_SYS_ADMIN to leverage Linux control groups (cgroups) to get out of the box. If you have access to the devices /dev of the container host, you can go and mount the hard drive and access the root filesystem, as explained prior. And we give a quick reference to what could be done with the /proc/keys.\nThe last technique, which seems to be very local-docker-installation related is the container with access to the Docker socket. With access to the Docker socket, you can start further container with “super-powers”, which allows you previously explained techniques.\nA detailed explanation of these attacks can be found on this blog Container Breakouts – Part 1, Container Breakouts – Part 2 and Container Breakouts – Part 3. You may now think “why do they include the Docker socket within the breakout list?”. That’s the point. Nowadays, a cloud container runtime may come in various flavors. You never know if the container is started within a Kubernetes environment or own-created orchestration layer. We will finally address the container breakout by the usage of the metadata API. The metadata API of the cloud is the control plane of the cloud, like the docker socket is the control plain of the local docker installation.\nAfter discussing the various breakout techniques, we go through a short comparison from wide-spread cloud container runtimes. (We decided to let Kubernetes runtimes out of the comparison). The following screenshot shows the overview table.\nThe data is measured with botb and amicontained. All technical details can be found on Github, including the scan results of both tools.\nAfter summarization of the attack vectors, we go through the details of how botb and amicontained can be used by you, maybe in the next assessment?\nWith the knowledge about the attacks, we go through the mitigation techniques that can be used to prevent breakouts and tune the security of your sandbox. Finally, a conclusion and an outline with further work close the session.\nWe hope that you enjoyed the session and if you are interested to discuss content, do not hesitate and get in touch.\nCheers,\nMatthias and Jan\n–\nSlides or Google Slides Recording Scan results on GitHub BSides Munich ",
   "wordCount" : "581",
   "inLanguage": "en",
-  "image": "blog.nody.cc/images/logo.png","datePublished": "2020-08-23T16:30:00+02:00",
+  "image": "https://nodyhub.github.io/images/logo.png","datePublished": "2020-08-23T16:30:00+02:00",
   "dateModified": "2020-08-23T16:30:00+02:00",
   "author":{
     "@type": "Person",
@@ -114,14 +114,14 @@
   },
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "blog.nody.cc/posts/bsides-munich-2020/"
+    "@id": "https://nodyhub.github.io/posts/bsides-munich-2020/"
   },
   "publisher": {
     "@type": "Organization",
     "name": "Nody´s blog",
     "logo": {
       "@type": "ImageObject",
-      "url": "blog.nody.cc/favicon.ico"
+      "url": "https://nodyhub.github.io/favicon.ico"
     }
   }
 }
@@ -143,7 +143,7 @@
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="blog.nody.cc/" accesskey="h" title="Nody´s blog (Alt + H)">Nody´s blog</a>
+            <a href="https://nodyhub.github.io/" accesskey="h" title="Nody´s blog (Alt + H)">Nody´s blog</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -169,17 +169,17 @@
         </div>
         <ul id="menu">
             <li>
-                <a href="blog.nody.cc/blog.nody.cc/about/" title="About">
+                <a href="https://nodyhub.github.io/about/" title="About">
                     <span>About</span>
                 </a>
             </li>
             <li>
-                <a href="blog.nody.cc/blog.nody.cc/tags/" title="Tags">
+                <a href="https://nodyhub.github.io/tags/" title="Tags">
                     <span>Tags</span>
                 </a>
             </li>
             <li>
-                <a href="blog.nody.cc/blog.nody.cc/posts/" title="Archive">
+                <a href="https://nodyhub.github.io/posts/" title="Archive">
                     <span>Archive</span>
                 </a>
             </li>
@@ -236,17 +236,17 @@
 
   <footer class="post-footer">
     <ul class="post-tags">
-      <li><a href="blog.nody.cc/tags/docker/">Docker</a></li>
-      <li><a href="blog.nody.cc/tags/container/">Container</a></li>
-      <li><a href="blog.nody.cc/tags/breakout/">Breakout</a></li>
-      <li><a href="blog.nody.cc/tags/security/">Security</a></li>
+      <li><a href="https://nodyhub.github.io/tags/docker/">Docker</a></li>
+      <li><a href="https://nodyhub.github.io/tags/container/">Container</a></li>
+      <li><a href="https://nodyhub.github.io/tags/breakout/">Breakout</a></li>
+      <li><a href="https://nodyhub.github.io/tags/security/">Security</a></li>
     </ul>
   </footer>
 </article>
     </main>
     
 <footer class="footer">
-        <span>&copy; 2024 <a href="blog.nody.cc/">Nody´s blog</a></span> · 
+        <span>&copy; 2024 <a href="https://nodyhub.github.io/">Nody´s blog</a></span> · 
 
     <span>
         Powered by

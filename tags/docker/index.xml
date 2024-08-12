@@ -2,71 +2,71 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Docker on Nody´s blog</title>
-    <link>blog.nody.cc/tags/docker/</link>
+    <link>https://nodyhub.github.io/tags/docker/</link>
     <description>Recent content in Docker on Nody´s blog</description>
     <image>
       <title>Nody´s blog</title>
-      <url>blog.nody.cc/images/logo.png</url>
-      <link>blog.nody.cc/images/logo.png</link>
+      <url>https://nodyhub.github.io/images/logo.png</url>
+      <link>https://nodyhub.github.io/images/logo.png</link>
     </image>
     <generator>Hugo -- 0.128.1</generator>
     <language>en-us</language>
     <lastBuildDate>Sun, 23 Aug 2020 16:30:00 +0200</lastBuildDate>
-    <atom:link href="blog.nody.cc/tags/docker/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://nodyhub.github.io/tags/docker/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Pentesting Cloud Sandboxes in the wild</title>
-      <link>blog.nody.cc/posts/bsides-munich-2020/</link>
+      <link>https://nodyhub.github.io/posts/bsides-munich-2020/</link>
       <pubDate>Sun, 23 Aug 2020 16:30:00 +0200</pubDate>
-      <guid>blog.nody.cc/posts/bsides-munich-2020/</guid>
+      <guid>https://nodyhub.github.io/posts/bsides-munich-2020/</guid>
       <description>&lt;p&gt;Matthias and I talked about cloud sandboxes on &lt;a href=&#34;https://2020.bsidesmunich.org/&#34;&gt;virtual BSides Munich 2020&lt;/a&gt;. This blogpost summarizes the content of the talk.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Pentesting Cloud Sandboxes in the wild</title>
-      <link>blog.nody.cc/publication/2020-bsidesmuc/</link>
+      <link>https://nodyhub.github.io/publication/2020-bsidesmuc/</link>
       <pubDate>Sat, 01 Aug 2020 15:11:49 +0200</pubDate>
-      <guid>blog.nody.cc/publication/2020-bsidesmuc/</guid>
+      <guid>https://nodyhub.github.io/publication/2020-bsidesmuc/</guid>
       <description>&lt;p&gt;Matthias Luft &amp;amp; Jan Harrie, Bsides Munich, Munich/Virtual, Germany&lt;/p&gt;</description>
     </item>
     <item>
       <title>Container Breakouts – Part 3: Docker Socket</title>
-      <link>blog.nody.cc/posts/container-breakouts-part3/</link>
+      <link>https://nodyhub.github.io/posts/container-breakouts-part3/</link>
       <pubDate>Thu, 30 Jul 2020 14:20:35 +0200</pubDate>
-      <guid>blog.nody.cc/posts/container-breakouts-part3/</guid>
+      <guid>https://nodyhub.github.io/posts/container-breakouts-part3/</guid>
       <description>&lt;p&gt;This post is part of a series and shows container breakout techniques that can be performed if a container is started with a mounted Docker socket inside the container.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Container Breakouts – Part 2: Privileged Container</title>
-      <link>blog.nody.cc/posts/container-breakouts-part2/</link>
+      <link>https://nodyhub.github.io/posts/container-breakouts-part2/</link>
       <pubDate>Tue, 21 Jul 2020 15:42:19 +0200</pubDate>
-      <guid>blog.nody.cc/posts/container-breakouts-part2/</guid>
+      <guid>https://nodyhub.github.io/posts/container-breakouts-part2/</guid>
       <description>&lt;p&gt;This post is part of a series and shows container breakout techniques that can be performed if a container is started privileged.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Container Breakouts – Part 1: Access to root directory of the Host</title>
-      <link>blog.nody.cc/posts/container-breakouts-part1/</link>
+      <link>https://nodyhub.github.io/posts/container-breakouts-part1/</link>
       <pubDate>Wed, 15 Jul 2020 08:39:10 +0200</pubDate>
-      <guid>blog.nody.cc/posts/container-breakouts-part1/</guid>
+      <guid>https://nodyhub.github.io/posts/container-breakouts-part1/</guid>
       <description>&lt;p&gt;This post is part of a series and shows container breakout techniques that can be performed if a container is started with access to the host root directory.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Training: Docker, Kubernetes &amp; Security in Enterprise Environments</title>
-      <link>blog.nody.cc/publication/2020-troopers/</link>
+      <link>https://nodyhub.github.io/publication/2020-troopers/</link>
       <pubDate>Fri, 20 Mar 2020 00:00:00 +0000</pubDate>
-      <guid>blog.nody.cc/publication/2020-troopers/</guid>
+      <guid>https://nodyhub.github.io/publication/2020-troopers/</guid>
       <description>Conference content from TROOPERS20</description>
     </item>
     <item>
       <title>Docker, CI/CD &amp; DevOps Security</title>
-      <link>blog.nody.cc/publication/2019-ish/</link>
+      <link>https://nodyhub.github.io/publication/2019-ish/</link>
       <pubDate>Wed, 08 May 2019 00:00:00 +0000</pubDate>
-      <guid>blog.nody.cc/publication/2019-ish/</guid>
+      <guid>https://nodyhub.github.io/publication/2019-ish/</guid>
       <description>Conference content from ISH Summit day</description>
     </item>
     <item>
       <title>TROOPERS19</title>
-      <link>blog.nody.cc/publication/2019-troopers/</link>
+      <link>https://nodyhub.github.io/publication/2019-troopers/</link>
       <pubDate>Wed, 20 Mar 2019 00:00:00 +0000</pubDate>
-      <guid>blog.nody.cc/publication/2019-troopers/</guid>
+      <guid>https://nodyhub.github.io/publication/2019-troopers/</guid>
       <description>Conference content from TROOPERS19</description>
     </item>
   </channel>
