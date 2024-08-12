@@ -2,9 +2,6 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://blog.nody.cc/tags/attack/</loc>
-    <lastmod>2024-08-09T08:20:36+02:00</lastmod>
-  </url><url>
     <loc>https://blog.nody.cc/tags/index/</loc>
     <lastmod>2024-08-09T08:20:36+02:00</lastmod>
   </url><url>
@@ -14,13 +11,7 @@
     <loc>https://blog.nody.cc/posts/</loc>
     <lastmod>2024-08-09T08:20:36+02:00</lastmod>
   </url><url>
-    <loc>https://blog.nody.cc/posts/link-write-attack/</loc>
-    <lastmod>2024-08-09T08:20:36+02:00</lastmod>
-  </url><url>
     <loc>https://blog.nody.cc/tags/</loc>
-    <lastmod>2024-08-09T08:20:36+02:00</lastmod>
-  </url><url>
-    <loc>https://blog.nody.cc/tags/tar/</loc>
     <lastmod>2024-08-09T08:20:36+02:00</lastmod>
   </url><url>
     <loc>https://blog.nody.cc/tags/breakout/</loc>
