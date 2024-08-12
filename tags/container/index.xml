@@ -2,29 +2,29 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Container on Nody´s blog</title>
-    <link>https://nodyhub.github.io/tags/container/</link>
+    <link>https://blog.nody.cc/tags/container/</link>
     <description>Recent content in Container on Nody´s blog</description>
     <image>
       <title>Nody´s blog</title>
-      <url>https://nodyhub.github.io/images/logo.png</url>
-      <link>https://nodyhub.github.io/images/logo.png</link>
+      <url>https://blog.nody.cc/images/logo.png</url>
+      <link>https://blog.nody.cc/images/logo.png</link>
     </image>
     <generator>Hugo -- 0.128.1</generator>
     <language>en-us</language>
     <lastBuildDate>Sun, 23 Aug 2020 16:30:00 +0200</lastBuildDate>
-    <atom:link href="https://nodyhub.github.io/tags/container/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://blog.nody.cc/tags/container/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Pentesting Cloud Sandboxes in the wild</title>
-      <link>https://nodyhub.github.io/posts/bsides-munich-2020/</link>
+      <link>https://blog.nody.cc/posts/bsides-munich-2020/</link>
       <pubDate>Sun, 23 Aug 2020 16:30:00 +0200</pubDate>
-      <guid>https://nodyhub.github.io/posts/bsides-munich-2020/</guid>
+      <guid>https://blog.nody.cc/posts/bsides-munich-2020/</guid>
       <description>&lt;p&gt;Matthias and I talked about cloud sandboxes on &lt;a href=&#34;https://2020.bsidesmunich.org/&#34;&gt;virtual BSides Munich 2020&lt;/a&gt;. This blogpost summarizes the content of the talk.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Pentesting Cloud Sandboxes in the wild</title>
-      <link>https://nodyhub.github.io/publication/2020-bsidesmuc/</link>
+      <link>https://blog.nody.cc/publication/2020-bsidesmuc/</link>
       <pubDate>Sat, 01 Aug 2020 15:11:49 +0200</pubDate>
-      <guid>https://nodyhub.github.io/publication/2020-bsidesmuc/</guid>
+      <guid>https://blog.nody.cc/publication/2020-bsidesmuc/</guid>
       <description>&lt;p&gt;Matthias Luft &amp;amp; Jan Harrie, Bsides Munich, Munich/Virtual, Germany&lt;/p&gt;</description>
     </item>
   </channel>
