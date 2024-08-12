@@ -1,114 +1,299 @@
 <!DOCTYPE html>
-<html>
-<head>
-    
-        
-<meta charset="utf-8">
-<meta name="HandheldFriendly" content="True">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="referrer" content="no-referrer-when-downgrade">
+<html lang="en" dir="auto">
 
-<title>Kubernetes Basics and Principles  - Nody´s blog</title>
-<meta name="description" content="Blog with infosec content from Jan Harrie">
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Kubernetes Basics and Principles | Nody´s blog</title>
+<meta name="keywords" content="Kubernetes">
+<meta name="description" content="This blogpost is intended to be a background knowledge section for further posts. The content is all around Kubernetes basic principles and reflects more a dictionary then a legitim blog post. The section itself may not explain every nuance of the topic – only as much as necessary as needed in other posts.">
+<meta name="author" content="Jan Harrie">
+<link rel="canonical" href="//blog.nody.cc/posts/kubernetes-basics/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.fc220c15db4aef0318bbf30adc45d33d4d7c88deff3238b23eb255afdc472ca6.css" integrity="sha256-/CIMFdtK7wMYu/MK3EXTPU18iN7/MjiyPrJVr9xHLKY=" rel="preload stylesheet" as="style">
+<link rel="icon" href="//blog.nody.cc/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="//blog.nody.cc/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="//blog.nody.cc/favicon-32x32.png">
+<link rel="apple-touch-icon" href="//blog.nody.cc/apple-touch-icon.png">
+<link rel="mask-icon" href="//blog.nody.cc/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="//blog.nody.cc/posts/kubernetes-basics/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
 
-<link rel="alternate" type="application/rss+xml" title="RSS" href="//blog.nody.cc/rss/">
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
 
-<link rel="icon" type="image/x-icon" href="//blog.nody.cc/favicon.ico">
-<link rel="apple-touch-icon-precomposed" href="//blog.nody.cc/favicon.png">
+            .list {
+                background: var(--theme);
+            }
 
-<link rel="stylesheet" href="//blog.nody.cc/css/style.css?rnd=1609152415" />
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+  
 
 <meta property="og:title" content="Kubernetes Basics and Principles" />
 <meta property="og:description" content="This blogpost is intended to be a background knowledge section for further posts. The content is all around Kubernetes basic principles and reflects more a dictionary then a legitim blog post. The section itself may not explain every nuance of the topic – only as much as necessary as needed in other posts." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="//blog.nody.cc/posts/kubernetes-basics/" />
-<meta property="og:image" content="//blog.nody.cc/images/logo.png"/>
+<meta property="og:image" content="//blog.nody.cc/images/logo.png" />
+<meta property="article:section" content="posts" />
 
 
-<meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:image" content="//blog.nody.cc/images/logo.png"/>
 
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="//blog.nody.cc/images/logo.png" />
 <meta name="twitter:title" content="Kubernetes Basics and Principles"/>
 <meta name="twitter:description" content="This blogpost is intended to be a background knowledge section for further posts. The content is all around Kubernetes basic principles and reflects more a dictionary then a legitim blog post. The section itself may not explain every nuance of the topic – only as much as necessary as needed in other posts."/>
 
 
-
-
-
-
-    
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "//blog.nody.cc/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Kubernetes Basics and Principles",
+      "item": "//blog.nody.cc/posts/kubernetes-basics/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Kubernetes Basics and Principles",
+  "name": "Kubernetes Basics and Principles",
+  "description": "This blogpost is intended to be a background knowledge section for further posts. The content is all around Kubernetes basic principles and reflects more a dictionary then a legitim blog post. The section itself may not explain every nuance of the topic – only as much as necessary as needed in other posts.\n",
+  "keywords": [
+    "Kubernetes"
+  ],
+  "articleBody": "This blogpost is intended to be a background knowledge section for further posts. The content is all around Kubernetes basic principles and reflects more a dictionary then a legitim blog post. The section itself may not explain every nuance of the topic – only as much as necessary as needed in other posts.\nThe list of topics and explanations may be updated over the time.\nKubernetes itself Kubernetes is a production-grade container orchestration solution that is available on all modern cloud provider for executing and orchestrating containerized applications. The applications are distributed over multiple nodes, which execute the application containers. The container itself are executed by the installed container runtime interface, while the management of the containers is handled by Kubernetes.\nKubernetes offers fine-grained permission management capabilities that can be set for user and groups – implemented by Role Based Access Control (RBAC). The scope can be set to the overall cluster or only to a Namespace. A best-practice to develop a cluster application is to assign projects to its own or multiple Namespaces and hand over the project team administrative access in the development environment. The administrator can manage service accounts, roles, storage, services, pods and further namespace scoped resources. More details about Kubernetes can be read in the article What is Kubernetes?.\nThe most interesting part is that an administrator can install and configure the cluster and slice it into pieces, which can be managed within these pieces independent.\nNetworking One of the Kubernetes advantages (maybe also disadvantages) is that it is built like a big and flexible framework. Besides different storage classes and different authentication provider, the implementation of the Cluster Networking can be exchanged. Kubernetes offers the flexibility to set for the overall cluster one network plugin. These network plugins are created and maintained independent of the Kubernetes project, like Calico or Cilium. Even the cloud provider like AWS implement their own plugins for an optimal integration into the cloud environment. The decision which network plugin depends on the requirements. Requirements can be reliability, encryption, speed, or Network Policies. Only one network plugin can be configured for a cluster.\nNetwork Policies Network Policies are the kind of resources in Kubernetes that can be used to define stateless firewall rules for managed cluster workload. The policies are applied on Pod’s, namespaces or a combination of namespaces and pods.\nNetwork Policies are defined on an allow-listing approach and deployed in a namespace. The policy starts with a pod selection – based on the label – on which pod’s it should be applied. Hence, the same labels can be set to different pods, a group selection is also possible. If the Network Policy should be valid for every resource, a wild-card selector ({}) can even be used. This selection defines on which resource the rule should be applied. The next part is if it is an ingress or an egress rule and which ports (OSI layer 4) are allowed – the port is optional. Finally, the rule defines the network communication opposite. The opposite is a pod, a namespace, a combination of pod and namespace or IP block in CIDR notation. Pod and namespace are selected based on the labels, which must have been set previously. If no Network Policy is configured for a pod, the pod can communicate over the network without any restriction.\nA best practice approach is to deploy a deny all network policy and configure in an explicit allow-listing approach intended communication paths. But, be aware, this may escalate quickly 😉\nLabel and Selectors Label and Selectors is the concept in Kubernetes, which is used to perform group operations on similar resources\nBefore a resource can be selected, these resources must be labelled. Kubernetes offers the feature to label each resource with key value pairs. These key value pairs can be selected freely, e.g., foo: bar, stage: dev or app: frontend. Labels can be set to almost every object (not sure if it is possible to label all resources). The semantic of these labels is only in the interpretation of the people that set these labels. Okay, nowadays there might be technical resources that depend on such labels to make decisions. Objects from one type can be selected by selectors. These selectors are analogous to the labels and must match labels that have been previous set, e.g., foo: bar, stage: dev or app: frontend.\n",
+  "wordCount" : "729",
+  "inLanguage": "en",
+  "image": "//blog.nody.cc/images/logo.png","datePublished": "0001-01-01T00:00:00Z",
+  "dateModified": "0001-01-01T00:00:00Z",
+  "author":{
+    "@type": "Person",
+    "name": "Jan Harrie"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "//blog.nody.cc/posts/kubernetes-basics/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Nody´s blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "//blog.nody.cc/favicon.ico"
+    }
+  }
+}
+</script>
 </head>
-<body>
-    <div class="container">
-        <header> 
-            
-                <h1 class="site-header">
-    <a href="//blog.nody.cc/">Nody´s blog</a>
-</h1>
-<nav>
-    
-    
-    <a class="" href="/about/" title="About">About</a>
-    
-    <a class="" href="/tags/" title="Tags">Tags</a>
-    
-    <a class="" href="/posts/" title="Archive">Archive</a>
-    
-</nav>
 
-            
-        </header>
-        <main>
-            
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
 
-    <article class="post">
-        <header>
-            <h1>Kubernetes Basics and Principles</h1>
-        </header>
-        <div class="content">
-            <p>This blogpost is intended to be a background knowledge section for further posts. The content is all around Kubernetes basic principles and reflects more a dictionary then a legitim blog post. The section itself may not explain every nuance of the topic – only as much as necessary as needed in other posts.</p>
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="//blog.nody.cc/" accesskey="h" title="Nody´s blog (Alt + H)">Nody´s blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="//blog.nody.cc/about/" title="About">
+                    <span>About</span>
+                </a>
+            </li>
+            <li>
+                <a href="//blog.nody.cc/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="//blog.nody.cc/posts/" title="Archive">
+                    <span>Archive</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Kubernetes Basics and Principles
+    </h1>
+    <div class="post-meta">Jan Harrie
+
+</div>
+  </header> 
+  <div class="post-content"><p>This blogpost is intended to be a background knowledge section for further posts. The content is all around Kubernetes basic principles and reflects more a dictionary then a legitim blog post. The section itself may not explain every nuance of the topic – only as much as necessary as needed in other posts.</p>
 <p>The list of topics and explanations may be updated over the time.</p>
-<h2 id="kubernetes-itself">Kubernetes itself</h2>
+<h2 id="kubernetes-itself">Kubernetes itself<a hidden class="anchor" aria-hidden="true" href="#kubernetes-itself">#</a></h2>
 <p><a href="https://kubernetes.io/">Kubernetes</a> is a production-grade container orchestration solution that is available on all modern cloud provider for executing and orchestrating containerized applications. The applications are distributed over multiple nodes, which execute the application containers. The container itself are executed by the installed container runtime interface, while the management of the containers is handled by Kubernetes.</p>
 <p>Kubernetes offers fine-grained permission management capabilities that can be set for user and groups – implemented by <a href="https://kubernetes.io/docs/reference/access-authn-authz/rbac/">Role Based Access Control (RBAC)</a>. The scope can be set to the overall cluster or only to a <a href="https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/">Namespace</a>. A best-practice to develop a cluster application is to assign projects to its own or multiple Namespaces and hand over the project team administrative access in the development environment. The administrator can manage service accounts, roles, storage, services, pods and further namespace scoped resources. More details about Kubernetes can be read in the article <a href="https://kubernetes.io/docs/concepts/overview/what-is-kubernetes/">What is Kubernetes?</a>.</p>
 <p>The most interesting part is that an administrator can install and configure the cluster and slice it into pieces, which can be managed within these pieces independent.</p>
-<h2 id="networking">Networking</h2>
+<h2 id="networking">Networking<a hidden class="anchor" aria-hidden="true" href="#networking">#</a></h2>
 <p>One of the Kubernetes advantages (maybe also disadvantages) is that it is built like a big and flexible framework. Besides different storage classes and different authentication provider, the implementation of the <a href="https://kubernetes.io/docs/concepts/cluster-administration/networking/">Cluster Networking</a> can be exchanged. Kubernetes offers the flexibility to set for the overall cluster one network plugin. These network plugins are created and maintained independent of the Kubernetes project, like <a href="https://www.projectcalico.org/">Calico</a> or <a href="https://cilium.io">Cilium</a>. Even the cloud provider like AWS implement their own plugins for an optimal integration into the cloud environment. The decision which network plugin depends on the requirements. Requirements can be reliability, encryption, speed, or Network Policies. Only one network plugin can be configured for a cluster.</p>
-<h2 id="network-policies">Network Policies</h2>
+<h2 id="network-policies">Network Policies<a hidden class="anchor" aria-hidden="true" href="#network-policies">#</a></h2>
 <p><a href="https://kubernetes.io/docs/concepts/services-networking/network-policies/">Network Policies</a> are the kind of resources in Kubernetes that can be used to define stateless firewall rules for managed cluster workload. The policies are applied on Pod’s, namespaces or a combination of namespaces and pods.</p>
 <p>Network Policies are defined on an allow-listing approach and deployed in a namespace. The policy starts with a pod selection – based on the label – on which pod’s it should be applied. Hence, the same labels can be set to different pods, a group selection is also possible. If the Network Policy should be valid for every resource, a wild-card selector (<code>{}</code>) can even be used. This selection defines on which resource the rule should be applied. The next part is if it is an ingress or an egress rule and which ports (<a href="https://en.wikipedia.org/wiki/OSI_model#Layer_4:_Transport_Layer">OSI layer 4</a>) are allowed – the port is optional. Finally, the rule defines the network communication opposite. The opposite is a pod, a namespace, a combination of pod and namespace or IP block in CIDR notation. Pod and namespace are selected based on the labels, which must have been set previously. If no Network Policy is configured for a pod, the pod can communicate over the network without any restriction.</p>
 <p>A best practice approach is to deploy a deny all network policy and configure in an explicit allow-listing approach intended communication paths.
 But, be aware, this may escalate quickly 😉</p>
-<h2 id="label-and-selectors">Label and Selectors</h2>
+<h2 id="label-and-selectors">Label and Selectors<a hidden class="anchor" aria-hidden="true" href="#label-and-selectors">#</a></h2>
 <p><a href="https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/">Label and Selectors</a> is the concept in Kubernetes, which is used to perform group operations on similar resources</p>
 <p>Before a resource can be selected, these resources must be labelled. Kubernetes offers the feature to label each resource with key value pairs. These key value pairs can be selected freely, e.g., <code>foo: bar</code>, <code>stage: dev</code> or <code>app: frontend</code>. Labels can be set to almost every object (not sure if it is possible to label all resources). The semantic of these labels is only in the interpretation of the people that set these labels. Okay, nowadays there might be technical resources that depend on such labels to make decisions. Objects from one type can be selected by selectors. These selectors are analogous to the labels and must match labels that have been previous set, e.g., <code>foo: bar</code>, <code>stage: dev</code> or <code>app: frontend</code>.</p>
-        </div>
-        <div class="article-info">
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="//blog.nody.cc/tags/kubernetes/">Kubernetes</a></li>
+    </ul>
+  </footer>
+</article>
+    </main>
     
-    <div class="article-taxonomies">
-        
-            
-                <ul class="article-tags">
-                    
-                        <li><a href="//blog.nody.cc/tags/kubernetes">#Kubernetes</a></li>
-                    
-                </ul>
-        
-    </div>
-</div>
+<footer class="footer">
+        <span>&copy; 2024 <a href="//blog.nody.cc/">Nody´s blog</a></span> · 
 
-    </article>
-    
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
 
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
 
-        </main>
-        <footer>
-            
-                <p>© Jan Harrie, 2020<br>
-Powered by <a target="_blank" href="https://gohugo.io/">Hugo</a>, theme <a target="_blank" href="https://github.com/mitrichius/hugo-theme-anubis">Anubis</a>.
-</p>
-            
-        </footer>
-    </div>
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
 </body>
+
 </html>

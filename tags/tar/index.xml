@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Tar on Nody´s blog</title>
+    <link>//localhost:1313/tags/tar/</link>
+    <description>Recent content in Tar on Nody´s blog</description>
+    <image>
+      <title>Nody´s blog</title>
+      <url>//localhost:1313/images/logo.png</url>
+      <link>//localhost:1313/images/logo.png</link>
+    </image>
+    <generator>Hugo -- 0.128.1</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 09 Aug 2024 08:20:35 +0200</lastBuildDate>
+    <atom:link href="//localhost:1313/tags/tar/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Sweet combination: Link-write Attack during extraction</title>
+      <link>//localhost:1313/posts/link-write-attack/</link>
+      <pubDate>Fri, 09 Aug 2024 08:20:35 +0200</pubDate>
+      <guid>//localhost:1313/posts/link-write-attack/</guid>
+      <description>&lt;p&gt;I have recently done some development work and deep-dived into archive extraction. I identified during that work interesting behaviors which I will explain in the following.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>
