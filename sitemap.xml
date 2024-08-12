@@ -2,115 +2,115 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>//blog.nody.cc/tags/index/</loc>
+    <loc>blog.nody.cc/tags/index/</loc>
     <lastmod>2024-08-09T08:20:35+02:00</lastmod>
   </url><url>
-    <loc>//blog.nody.cc/</loc>
+    <loc>blog.nody.cc/</loc>
     <lastmod>2024-08-09T08:20:35+02:00</lastmod>
   </url><url>
-    <loc>//blog.nody.cc/posts/</loc>
+    <loc>blog.nody.cc/posts/</loc>
     <lastmod>2024-08-09T08:20:35+02:00</lastmod>
   </url><url>
-    <loc>//blog.nody.cc/tags/</loc>
+    <loc>blog.nody.cc/tags/</loc>
     <lastmod>2024-08-09T08:20:35+02:00</lastmod>
   </url><url>
-    <loc>//blog.nody.cc/tags/breakout/</loc>
+    <loc>blog.nody.cc/tags/breakout/</loc>
     <lastmod>2020-08-23T16:30:00+02:00</lastmod>
   </url><url>
-    <loc>//blog.nody.cc/tags/container/</loc>
+    <loc>blog.nody.cc/tags/container/</loc>
     <lastmod>2020-08-23T16:30:00+02:00</lastmod>
   </url><url>
-    <loc>//blog.nody.cc/tags/docker/</loc>
+    <loc>blog.nody.cc/tags/docker/</loc>
     <lastmod>2020-08-23T16:30:00+02:00</lastmod>
   </url><url>
-    <loc>//blog.nody.cc/posts/bsides-munich-2020/</loc>
+    <loc>blog.nody.cc/posts/bsides-munich-2020/</loc>
     <lastmod>2020-08-23T16:30:00+02:00</lastmod>
   </url><url>
-    <loc>//blog.nody.cc/tags/security/</loc>
+    <loc>blog.nody.cc/tags/security/</loc>
     <lastmod>2020-08-23T16:30:00+02:00</lastmod>
   </url><url>
-    <loc>//blog.nody.cc/publication/2020-bsidesmuc/</loc>
+    <loc>blog.nody.cc/publication/2020-bsidesmuc/</loc>
     <lastmod>2020-08-01T15:11:49+02:00</lastmod>
   </url><url>
-    <loc>//blog.nody.cc/publication/</loc>
+    <loc>blog.nody.cc/publication/</loc>
     <lastmod>2020-08-01T15:11:49+02:00</lastmod>
   </url><url>
-    <loc>//blog.nody.cc/posts/container-breakouts-part3/</loc>
+    <loc>blog.nody.cc/posts/container-breakouts-part3/</loc>
     <lastmod>2020-07-30T14:20:35+02:00</lastmod>
   </url><url>
-    <loc>//blog.nody.cc/posts/container-breakouts-part2/</loc>
+    <loc>blog.nody.cc/posts/container-breakouts-part2/</loc>
     <lastmod>2020-07-21T15:42:19+02:00</lastmod>
   </url><url>
-    <loc>//blog.nody.cc/posts/container-breakouts-part1/</loc>
+    <loc>blog.nody.cc/posts/container-breakouts-part1/</loc>
     <lastmod>2020-07-15T08:39:10+02:00</lastmod>
   </url><url>
-    <loc>//blog.nody.cc/tags/kubernetes/</loc>
+    <loc>blog.nody.cc/tags/kubernetes/</loc>
     <lastmod>2020-06-27T11:39:55+02:00</lastmod>
   </url><url>
-    <loc>//blog.nody.cc/tags/network-policies/</loc>
+    <loc>blog.nody.cc/tags/network-policies/</loc>
     <lastmod>2020-06-27T11:39:55+02:00</lastmod>
   </url><url>
-    <loc>//blog.nody.cc/posts/2020-06-kubernetes-network-policy-verification/</loc>
+    <loc>blog.nody.cc/posts/2020-06-kubernetes-network-policy-verification/</loc>
     <lastmod>2020-06-27T11:39:55+02:00</lastmod>
   </url><url>
-    <loc>//blog.nody.cc/tags/devsecops/</loc>
+    <loc>blog.nody.cc/tags/devsecops/</loc>
     <lastmod>2020-03-20T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>//blog.nody.cc/publication/2020-troopers/</loc>
+    <loc>blog.nody.cc/publication/2020-troopers/</loc>
     <lastmod>2020-03-20T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>//blog.nody.cc/tags/troopers/</loc>
+    <loc>blog.nody.cc/tags/troopers/</loc>
     <lastmod>2020-03-20T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>//blog.nody.cc/tags/devseccon/</loc>
+    <loc>blog.nody.cc/tags/devseccon/</loc>
     <lastmod>2019-11-20T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>//blog.nody.cc/publication/2019-devseccon/</loc>
+    <loc>blog.nody.cc/publication/2019-devseccon/</loc>
     <lastmod>2019-11-20T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>//blog.nody.cc/tags/openshift/</loc>
+    <loc>blog.nody.cc/tags/openshift/</loc>
     <lastmod>2019-11-20T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>//blog.nody.cc/tags/basta/</loc>
+    <loc>blog.nody.cc/tags/basta/</loc>
     <lastmod>2019-09-19T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>//blog.nody.cc/publication/2019-basta/</loc>
+    <loc>blog.nody.cc/publication/2019-basta/</loc>
     <lastmod>2019-09-19T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>//blog.nody.cc/publication/2019-ish/</loc>
+    <loc>blog.nody.cc/publication/2019-ish/</loc>
     <lastmod>2019-05-08T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>//blog.nody.cc/tags/ish/</loc>
+    <loc>blog.nody.cc/tags/ish/</loc>
     <lastmod>2019-05-08T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>//blog.nody.cc/tags/cisco-aci/</loc>
+    <loc>blog.nody.cc/tags/cisco-aci/</loc>
     <lastmod>2019-03-20T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>//blog.nody.cc/tags/iaas/</loc>
+    <loc>blog.nody.cc/tags/iaas/</loc>
     <lastmod>2019-03-20T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>//blog.nody.cc/tags/threat-modelling/</loc>
+    <loc>blog.nody.cc/tags/threat-modelling/</loc>
     <lastmod>2019-03-20T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>//blog.nody.cc/publication/2019-troopers/</loc>
+    <loc>blog.nody.cc/publication/2019-troopers/</loc>
     <lastmod>2019-03-20T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>//blog.nody.cc/publication/2018-h2hc/</loc>
+    <loc>blog.nody.cc/publication/2018-h2hc/</loc>
     <lastmod>2018-09-17T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>//blog.nody.cc/tags/h2hc/</loc>
+    <loc>blog.nody.cc/tags/h2hc/</loc>
     <lastmod>2018-09-17T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>//blog.nody.cc/tags/nsx-t/</loc>
+    <loc>blog.nody.cc/tags/nsx-t/</loc>
     <lastmod>2018-09-17T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>//blog.nody.cc/tags/vmware/</loc>
+    <loc>blog.nody.cc/tags/vmware/</loc>
     <lastmod>2018-09-17T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>//blog.nody.cc/about/</loc>
+    <loc>blog.nody.cc/about/</loc>
   </url><url>
-    <loc>//blog.nody.cc/categories/</loc>
+    <loc>blog.nody.cc/categories/</loc>
   </url><url>
-    <loc>//blog.nody.cc/posts/kubernetes-basics/</loc>
+    <loc>blog.nody.cc/posts/kubernetes-basics/</loc>
   </url>
 </urlset>
